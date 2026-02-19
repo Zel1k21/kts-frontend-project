@@ -1,0 +1,27 @@
+@use 'styles/main.scss' as *;
+
+.button {
+  padding: $space-s $space-l;
+  background-color: $accent-color;
+  gap: $space-xxs;
+  min-height: 52px;
+  border: none;
+  color: $background-color;
+  cursor: pointer;
+
+  &:hover:not(.button--disabled):not(.button--loading) {
+    background-color: $button-primary-bg-hover;
+  }
+
+  &:active {
+    background-color: $button-primary-bg-active;
+  }
+}
+
+.button--disabled {
+  background-color: $button-primary-bg-disabled;
+}
+
+.button--loading {
+  @include flex-container(row, space-evenly, center);
+}

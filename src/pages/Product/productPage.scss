@@ -1,0 +1,17 @@
+@use 'styles/main.scss' as *;
+
+.products-page {
+  padding: 6.25rem;
+  background-color: $page-background-color;
+}
+
+.products-list {
+  margin-top: 2.25rem;
+  display: grid;
+  justify-content: space-between;
+  gap: 1.875rem 5rem;
+  grid-template-columns: repeat(auto-fill, $card-width);
+}
+
+.product-page-filters {
+}

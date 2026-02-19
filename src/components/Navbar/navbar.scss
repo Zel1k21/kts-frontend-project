@@ -1,0 +1,36 @@
+@use 'styles/main.scss' as *;
+
+.navbar {
+  @include flex-container(row, space-between, center);
+
+  height: $navbar-height;
+  background-color: $background-color;
+  border-bottom: 2px solid $border-color;
+  flex: 0;
+
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 6.25rem;
+}
+
+.shop-logo {
+  @include flex-container(row);
+  gap: 0.75rem;
+
+  .logo {
+    object-fit: contain;
+  }
+}
+
+.navigation-links {
+  @include flex-container(row);
+  gap: $space-xl;
+}
+
+.profile-links {
+  @include flex-container(row);
+  gap: $space-xl;
+}
