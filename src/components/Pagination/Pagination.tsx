@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import cn from 'classnames';
-import ArrowIcon from 'components/icons/ArrowIcon';
 
 export interface PaginationProps {
   currentPage: number; // Текущая страница
@@ -18,30 +17,42 @@ export const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   className,
 }) => {
-  const rangeStart = currentPage - delta;
-  const rangeEnd = currentPage + delta;
+  const leftSiblingIndex = Math.max(currentPage - delta, 1);
+  const rightSiblingIndex = Math.min(currentPage + delta, totalPages);
+
+  const shouldShowLeftEllipsis = leftSiblingIndex > 2;
+  const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
 
   const pages = useMemo(() => {
-    const result: (number | 'ellipsis')[] = [];
+    var result = [];
 
     result.push(1);
 
-    if (currentPage > delta) {
-      result.push('ellipsis');
-    }
-
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-      if (i > 1 && i <= totalPages) {
+    if (shouldShowLeftEllipsis) {
+      result.push('...');
+    } else if (leftSiblingIndex > 2) {
+      for (let i = 2; i < leftSiblingIndex; i++) {
         result.push(i);
       }
     }
 
-    if (currentPage + delta < totalPages) {
-      result.push('ellipsis');
+    for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+      if (i === 1) continue;
+      result.push(i);
     }
 
-    if (totalPages > 1 && !result.includes(totalPages)) {
-      result.push(totalPages);
+    if (shouldShowRightEllipsis) {
+      result.push('...');
+    } else if (rightSiblingIndex < totalPages - 1) {
+      for (let i = rightSiblingIndex + 1; i < totalPages; i++) {
+        result.push(i);
+      }
+    }
+
+    if (totalPages > 1) {
+      if (result[result.length - 1] !== totalPages) {
+        result.push(totalPages);
+      }
     }
 
     return result;
@@ -59,8 +70,8 @@ export const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
-  const handlePageClick = (page: number | 'ellipsis') => {
-    if (page !== currentPage && page !== 'ellipsis') {
+  const handlePageClick = (page: number | string) => {
+    if (page !== currentPage && typeof page === 'number') {
       onPageChange(page);
     }
   };
@@ -76,17 +87,26 @@ export const Pagination: React.FC<PaginationProps> = ({
         aria-label="Предыдущая страница"
         aria-disabled={currentPage === 1}
       >
-        <ArrowIcon direction="left" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          style={{
+            display: 'inline-block',
+            verticalAlign: 'middle',
+          }}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
       </button>
-      {pages.map((page, index) => {
-        if (page === `ellipsis-${index}`) {
-          return (
-            <span key={`ellipsis-${index}`} className="pagination-ellipsis" aria-hidden="true">
-              ...
-            </span>
-          );
-        }
-
+      {pages.map((page) => {
         const isActive = page === currentPage;
         return (
           <button
@@ -109,7 +129,24 @@ export const Pagination: React.FC<PaginationProps> = ({
         aria-label="Следующая страница"
         aria-disabled={currentPage === totalPages}
       >
-        <ArrowIcon direction="right" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          style={{
+            display: 'inline-block',
+            verticalAlign: 'middle',
+          }}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
       </button>
     </div>
   );

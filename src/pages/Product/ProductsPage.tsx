@@ -6,7 +6,7 @@ import { ProductList } from './ProductList';
 import Pagination from 'components/Pagination';
 import './productPage.scss';
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 3;
 
 export const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -104,15 +104,13 @@ export const ProductsPage: React.FC = () => {
       />
 
       {totalPages > 1 && (
-        <footer className="products-page-footer">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={PAGE_SIZE}
-            onPageChange={handlePageChange}
-            delta={2}
-          />
-        </footer>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={PAGE_SIZE}
+          onPageChange={handlePageChange}
+          delta={2}
+        />
       )}
     </div>
   );

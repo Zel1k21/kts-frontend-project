@@ -6,12 +6,27 @@
 }
 
 .products-list {
-  margin-top: 2.25rem;
+  margin: 2.25rem 0;
   display: grid;
   justify-content: space-between;
   gap: 1.875rem 5rem;
   grid-template-columns: repeat(auto-fill, $card-width);
 }
 
-.product-page-filters {
+.pagination {
+  @include flex-container(row, center, center);
+
+  .pagination-btn {
+    @include flex-container(row, center, center);
+    text-align: center;
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+  }
+
+  .pagination-btn--active {
+    background-color: $accent-color;
+    border-radius: 5px;
+    color: $background-color;
+  }
 }

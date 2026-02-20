@@ -1,15 +1,17 @@
 import * as React from 'react';
 import Icon, { type IconProps } from '../Icon';
+import './arrowIcon.scss'
 
 const ArrowIcon: React.FC<IconProps> = (props, direction?: 'left' | 'right' | '') => (
   <Icon {...props}>
     <path
       fillRule="evenodd"
+      className={'arrow-icon ' + direction}
       clipRule="evenodd"
       style={{
         transform:
           direction === 'left'
-            ? 'rotate(90deg)'
+            ? 'rotate(0.25turn)'
             : direction === 'right'
               ? 'rotate(270deg)'
               : 'none',
