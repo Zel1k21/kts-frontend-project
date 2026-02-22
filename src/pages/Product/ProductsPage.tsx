@@ -1,10 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { ProductSearch } from './ProductSearch';
 import { getProducts } from 'entities/Product/api';
 import type { Product, ProductsResponse } from 'entities/Product/types';
-import { ProductList } from './ProductList';
+import { ProductList } from 'components/ProductList/ProductList';
 import Pagination from 'components/Pagination';
-import './productPage.scss';
+import './productsPage.scss';
+import Text from 'components/Text';
 
 const PAGE_SIZE = 3;
 
@@ -14,9 +16,11 @@ export const ProductsPage: React.FC = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [productsCount, setProductsCount] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -26,7 +30,6 @@ export const ProductsPage: React.FC = () => {
       const response: ProductsResponse = await getProducts({
         page: currentPage,
         pageSize: PAGE_SIZE,
-        // Добавляем поиск по названию, если есть query
         ...(searchQuery && {
           filters: {
             title: { $containsi: searchQuery },
@@ -37,6 +40,7 @@ export const ProductsPage: React.FC = () => {
 
       setProducts(response.data);
       setTotalPages(response.meta.pagination.pageCount);
+      setProductsCount(response.meta.pagination.total);
     } catch (err) {
       console.error('Failed to fetch products:', err);
       setError('Не удалось загрузить товары. Попробуйте позже.');
@@ -62,7 +66,7 @@ export const ProductsPage: React.FC = () => {
   }, []);
 
   const handleProductClick = useCallback((product: Product) => {
-    console.log('Clicked product:', product); // change
+    navigate(`/products/${product.documentId}`);
   }, []);
 
   const handleAddToCart = useCallback((product: Product) => {
@@ -96,6 +100,9 @@ export const ProductsPage: React.FC = () => {
           placeholder="Найти товары..."
         />
       </div>
+      <Text view="p-20" weight="bold" className="products-count">
+        Всего товаров: {productsCount}
+      </Text>
 
       <ProductList
         products={products}

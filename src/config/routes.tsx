@@ -1,7 +1,7 @@
 import { type RouteObject, Navigate } from 'react-router';
 import App from '../App';
-import { ProductsPage } from '../pages/Product';
-// import { Product } from 'pages/Product';
+import { ProductsPage } from 'pages/Product/ProductsPage';
+import ProductPage from 'pages/Product/ProductPage';
 
 export const routes = {
   main: {
@@ -13,8 +13,8 @@ export const routes = {
     create: () => '/products',
   },
   product: {
-    mask: '/product/:id',
-    create: (id: string) => `/product/${id}`,
+    mask: '/products/:id',
+    create: (id: string) => `/products/${id}`,
   },
 };
 
@@ -27,10 +27,10 @@ export const routesConfig: RouteObject[] = [
         path: routes.products.mask,
         element: <ProductsPage />,
       },
-      // {
-      //   path: routes.product.mask,
-      //   element: <Product />,
-      // },
+      {
+        path: routes.product.mask,
+        element: <ProductPage />,
+      },
     ],
   },
   {
