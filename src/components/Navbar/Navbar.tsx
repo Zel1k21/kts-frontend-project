@@ -1,5 +1,6 @@
 import Text from 'components/Text';
 import './navbar.scss';
+import { Link } from 'react-router';
 
 const Navbar: React.FC<{}> = () => {
   return (
@@ -9,7 +10,7 @@ const Navbar: React.FC<{}> = () => {
         <Text>KTS</Text>
       </div>
       <div className="navigation-links">
-        <Text>Products</Text>
+        <Link to="/products">Products</Link>
         <Text>Categories</Text>
         <Text>About</Text>
       </div>

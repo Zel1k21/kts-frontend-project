@@ -78,3 +78,14 @@ export interface ProductResponse {
   data: Product;
   meta?: Record<string, unknown>;
 }
+
+export interface ProductsPageResponse {
+  products: Product[];
+  categories: ProductCategory[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+  };
+}

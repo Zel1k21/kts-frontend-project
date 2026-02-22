@@ -1,12 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ProductSearch } from './ProductSearch';
-import { getProducts } from 'entities/Product/api';
-import type { Product, ProductsResponse } from 'entities/Product/types';
+import { getProductCategories, getProducts } from 'entities/Product/api';
+import type { Product, ProductsResponse, ProductCategory } from 'entities/Product/types';
 import { ProductList } from 'components/ProductList/ProductList';
 import Pagination from 'components/Pagination';
 import './productsPage.scss';
 import Text from 'components/Text';
+import { CategoryFilter } from 'components/CategoryFilter';
 
 const PAGE_SIZE = 3;
 
@@ -22,19 +23,42 @@ export const ProductsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+
+  const fetchCategories = useCallback(async () => {
+    const uniqueCategories: ProductCategory[] = await getProductCategories({
+      populate: ['productCategory', 'images'],
+    });
+
+    uniqueCategories.sort((a, b) => a.title.localeCompare(b.title));
+    setCategories(uniqueCategories);
+  }, []);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
+      const filters: Record<string, unknown> = {};
+
+      if (selectedCategoryId) {
+        filters.productCategory = {
+          title: {
+            $eq: selectedCategoryId,
+          },
+        };
+      }
+
+      if (searchQuery) {
+        filters.title = { $containsi: searchQuery };
+      }
+
       const response: ProductsResponse = await getProducts({
         page: currentPage,
         pageSize: PAGE_SIZE,
-        ...(searchQuery && {
-          filters: {
-            title: { $containsi: searchQuery },
-          },
-        }),
+        filters: Object.keys(filters).length > 0 ? filters : undefined,
+        populate: ['productCategory', 'images'],
         sort: 'createdAt:desc',
       });
 
@@ -48,11 +72,15 @@ export const ProductsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchQuery]);
+  }, [currentPage, searchQuery, selectedCategoryId]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
@@ -63,6 +91,11 @@ export const ProductsPage: React.FC = () => {
     setCurrentPage(page);
     // Плавный скролл к началу списка
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleCategorySelect = useCallback((categoryId: string | null) => {
+    setSelectedCategoryId(categoryId);
+    setCurrentPage(1);
   }, []);
 
   const handleProductClick = useCallback((product: Product) => {
@@ -99,6 +132,14 @@ export const ProductsPage: React.FC = () => {
           initialValue={searchQuery}
           placeholder="Найти товары..."
         />
+
+        {categories.length > 0 && (
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategoryId}
+            onSelectCategory={handleCategorySelect}
+          />
+        )}
       </div>
       <Text view="p-20" weight="bold" className="products-count">
         Всего товаров: {productsCount}

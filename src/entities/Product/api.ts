@@ -1,5 +1,5 @@
 import { api } from 'shared/api';
-import type { ProductsResponse, ProductResponse } from './types';
+import type { ProductsResponse, ProductResponse, ProductCategory } from './types';
 import qs from 'qs';
 import { getRandomItems } from 'shared/getRandomItems';
 
@@ -59,6 +59,38 @@ export const getProducts = async (
 
   const response = await api.get<ProductsResponse>(`/products?${query}`);
   return response.data;
+};
+
+export const getProductCategories = async (
+  params: {
+    populate?: string[];
+  } = {}
+): Promise<ProductCategory[]> => {
+  const { populate = DEFAULT_POPULATE } = params;
+
+  const query = qs.stringify(
+    {
+      populate,
+    },
+    {
+      encode: false,
+      arrayFormat: 'brackets',
+      skipNulls: true,
+    }
+  );
+
+  const response = await api.get<ProductsResponse>(`/products?${query}`);
+  console.log(response);
+
+  const uniqueCategories = response.data.data.reduce((acc: ProductCategory[], product) => {
+    const category = product.productCategory;
+    if (category && !acc.find((c) => c.title === category.title)) {
+      acc.push(category);
+    }
+    return acc;
+  }, []);
+  uniqueCategories.sort((a, b) => a.title.localeCompare(b.title));
+  return uniqueCategories;
 };
 
 export const getProduct = async (
