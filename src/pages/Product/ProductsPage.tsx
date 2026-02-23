@@ -9,7 +9,7 @@ import './productsPage.scss';
 import Text from 'components/Text';
 import { CategoryFilter } from 'components/CategoryFilter';
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 4;
 
 export const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

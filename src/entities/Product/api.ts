@@ -5,6 +5,7 @@ import { getRandomItems } from 'shared/getRandomItems';
 
 const DEFAULT_POPULATE = ['images', 'productCategory'];
 
+// Для "похожих" товаров
 export const getRandomProducts = async (
   limit: number = 12,
   currentProduct?: string
@@ -29,6 +30,7 @@ export const getRandomProducts = async (
   };
 };
 
+// Для всех товаров
 export const getProducts = async (
   params: {
     page?: number;
@@ -61,6 +63,7 @@ export const getProducts = async (
   return response.data;
 };
 
+// Для категорий
 export const getProductCategories = async (
   params: {
     populate?: string[];
@@ -80,7 +83,6 @@ export const getProductCategories = async (
   );
 
   const response = await api.get<ProductsResponse>(`/products?${query}`);
-  console.log(response);
 
   const uniqueCategories = response.data.data.reduce((acc: ProductCategory[], product) => {
     const category = product.productCategory;
@@ -93,6 +95,7 @@ export const getProductCategories = async (
   return uniqueCategories;
 };
 
+//Для страницы одного товара
 export const getProduct = async (
   documentId: string,
   populate: string[] = DEFAULT_POPULATE

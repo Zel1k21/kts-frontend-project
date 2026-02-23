@@ -7,6 +7,10 @@
   gap: 1.875rem 5rem;
   grid-template-columns: repeat(auto-fill, $card-width);
 
+  @media (min-width: $mobile) {
+    justify-content: center;
+  }
+
   &--widget {
     display: flex;
     flex-direction: row;
@@ -35,9 +39,6 @@
         background: #a1a1a1;
       }
     }
-
-    /* scrollbar-width: thin;
-    scrollbar-color: #c1c1c1 #f1f1f1; */
 
     .product-card {
       flex: 0 0 auto;

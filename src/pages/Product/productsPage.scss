@@ -5,6 +5,18 @@
   background-color: $page-background-color;
   display: flex;
   flex-direction: column;
+
+  @media (min-width: $tablet) {
+    padding: 3rem 2rem;
+  }
+
+  @media (min-width: $desktop) {
+    padding: 4rem 4rem;
+  }
+
+  .product-card {
+    border-radius: 8px;
+  }
 }
 
 .products-page-header {
@@ -13,6 +25,15 @@
   align-items: center;
   text-weight: bold;
   margin-bottom: 1.5rem;
+}
+
+product-page-search {
+  flex: 1;
+  max-width: 100%;
+
+  @media (min-width: $tablet) {
+    max-width: 400px;
+  }
 }
 
 .products-count {
