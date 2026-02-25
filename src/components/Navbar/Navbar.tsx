@@ -2,11 +2,11 @@ import Text from 'components/Text';
 import './navbar.scss';
 import { Link } from 'react-router';
 
-const Navbar: React.FC<{}> = () => {
+const Navbar = () => {
   return (
     <div className="navbar">
       <div className="shop-logo">
-        <img className="logo"></img>
+        <img className="logo" />
         <Text>KTS</Text>
       </div>
       <div className="navigation-links">

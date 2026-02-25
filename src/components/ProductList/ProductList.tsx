@@ -1,16 +1,16 @@
-import React, { useCallback, useRef } from 'react';
+import Button from 'components/Button';
 import Card, { type CardProps } from 'components/Card';
 import { type Product } from 'entities/Product/types';
-import Button from 'components/Button';
+import React, { useCallback, useRef } from 'react';
 import './productList.scss';
 
-interface ProductListProps {
+type ProductListProps = {
   products: Product[];
   onProductClick?: (product: Product) => void;
   onAddToCart?: (product: Product) => void;
   isWidget?: boolean;
   className?: string;
-}
+};
 
 export const ProductList: React.FC<ProductListProps> = ({
   products,
@@ -92,9 +92,9 @@ export const ProductList: React.FC<ProductListProps> = ({
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {products?.map((product) => (
+      {products.map((product) => (
         <Card key={product.documentId || product.id} {...mapProductToCartProps(product)} />
-      )) || undefined}
+      ))}
     </div>
   );
 };

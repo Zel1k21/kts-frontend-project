@@ -1,12 +1,12 @@
-import React, { useState, useCallback } from 'react';
 import { SearchInput } from 'components/SearchInput';
+import React, { useState, useCallback } from 'react';
 
-interface ProductSearchPrpos {
+type ProductSearchPrpos = {
   onSearch: (query: string) => void;
   initialValue?: string;
   placeholder?: string;
   className?: string;
-}
+};
 
 export const ProductSearch: React.FC<ProductSearchPrpos> = ({
   className,

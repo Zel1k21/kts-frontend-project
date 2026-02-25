@@ -1,7 +1,8 @@
-import { type RouteObject, Navigate } from 'react-router';
-import App from '../App';
-import { ProductsPage } from 'pages/Product/ProductsPage';
 import ProductPage from 'pages/Product/ProductPage';
+import { ProductsPage } from 'pages/Product/ProductsPage';
+import { type RouteObject, Navigate } from 'react-router';
+
+import App from '../App';
 
 export const routes = {
   main: {

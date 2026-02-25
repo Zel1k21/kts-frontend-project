@@ -1,10 +1,10 @@
+import { ProductList } from 'components/ProductList/ProductList';
+import Text from 'components/Text';
+import { getRandomProducts, getProduct } from 'entities/Product/api';
+import type { Product, ProductsResponse } from 'entities/Product/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import type { Product, ProductsResponse } from 'entities/Product/types';
-import { getRandomProducts, getProduct } from 'entities/Product/api';
-import { ProductList } from 'components/ProductList/ProductList';
 import './productPage.scss';
-import Text from 'components/Text';
 
 export const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,12 +21,10 @@ export const ProductPage: React.FC = () => {
     try {
       const response: ProductsResponse = await getRandomProducts(12, id);
       setRelatedProducts(response.data);
-    } catch (err) {
-      setRelatedProducts([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,8 +40,6 @@ export const ProductPage: React.FC = () => {
         const productData = Array.isArray(response.data) ? response.data[0] : response.data;
         setProduct(productData);
         setError(null);
-      } catch (error) {
-        setError('Failed to fetch product');
       } finally {
         setLoading(false);
       }
@@ -74,15 +70,18 @@ export const ProductPage: React.FC = () => {
   };
 
   const handleBuyNow = () => {
-    console.log('Buy now:', product);
+    // console.log('Buy now:', product);
   };
 
-  const handleProductClick = useCallback((product: Product) => {
-    navigate(`/products/${product.documentId}`);
-  }, []);
+  const handleProductClick = useCallback(
+    (product: Product) => {
+      navigate(`/products/${product.documentId}`);
+    },
+    [navigate]
+  );
 
   const handleAddToCart = () => {
-    console.log('Add to cart:', product);
+    // console.log('Add to cart:', product);
   };
 
   const currentImage = product?.images?.[currentImageIndex];

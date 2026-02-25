@@ -1,11 +1,11 @@
-export interface ImageFormat {
+export type ImageFormat = {
   url: string;
   width: number;
   height: number;
   [key: string]: unknown;
-}
+};
 
-export interface Image {
+export type Image = {
   id: number;
   documentId: string;
   name: string;
@@ -29,9 +29,9 @@ export interface Image {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-}
+};
 
-export interface ProductCategory {
+export type ProductCategory = {
   id: number;
   documentId: string;
   title: string;
@@ -40,9 +40,9 @@ export interface ProductCategory {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-}
+};
 
-export interface Product {
+export type Product = {
   id: number;
   documentId: string;
   title: string;
@@ -56,30 +56,30 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-}
+};
 
-export interface Pagination {
+export type Pagination = {
   page: number;
   pageSize: number;
   pageCount: number;
   total: number;
-}
+};
 
-export interface ApiMeta {
+export type ApiMeta = {
   pagination: Pagination;
-}
+};
 
-export interface ProductsResponse {
+export type ProductsResponse = {
   data: Product[];
   meta: ApiMeta;
-}
+};
 
-export interface ProductResponse {
+export type ProductResponse = {
   data: Product;
   meta?: Record<string, unknown>;
-}
+};
 
-export interface ProductsPageResponse {
+export type ProductsPageResponse = {
   products: Product[];
   categories: ProductCategory[];
   pagination: {
@@ -88,4 +88,4 @@ export interface ProductsPageResponse {
     pageCount: number;
     total: number;
   };
-}
+};
