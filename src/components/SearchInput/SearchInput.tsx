@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
 import cn from 'classnames';
 import Input, { type InputProps } from 'components/Input';
+import React, { useEffect } from 'react';
 import { useDebounce } from 'shared/useDebounce';
-import SearchIcon from 'components/icons/SearchIcon';
 
-export interface SearchInputProps extends Omit<InputProps, 'afterslot'> {
+export type SearchInputProps = {
   //callback с значение для useDebounce
   onDebounceChange: (value: string) => void;
   //Задержка перед поиском (по умолчанию 300 мс)
   debounceDelay?: number;
   placeholder?: string;
   searchIcon?: React.ReactNode;
-}
+} & Omit<InputProps, 'afterslot'>;
 
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
@@ -19,7 +18,6 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   onDebounceChange,
   debounceDelay = 300,
   placeholder,
-  searchIcon = SearchIcon,
   className,
   disabled,
   ...inputProps

@@ -1,13 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { ProductSearch } from './ProductSearch';
+import { CategoryFilter } from 'components/CategoryFilter';
+import Pagination from 'components/Pagination';
+import { ProductList } from 'components/ProductList/ProductList';
+import Text from 'components/Text';
 import { getProductCategories, getProducts } from 'entities/Product/api';
 import type { Product, ProductsResponse, ProductCategory } from 'entities/Product/types';
-import { ProductList } from 'components/ProductList/ProductList';
-import Pagination from 'components/Pagination';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+
+import { ProductSearch } from './ProductSearch';
+
 import './productsPage.scss';
-import Text from 'components/Text';
-import { CategoryFilter } from 'components/CategoryFilter';
 
 const PAGE_SIZE = 4;
 
@@ -65,10 +67,6 @@ export const ProductsPage: React.FC = () => {
       setProducts(response.data);
       setTotalPages(response.meta.pagination.pageCount);
       setProductsCount(response.meta.pagination.total);
-    } catch (err) {
-      console.error('Failed to fetch products:', err);
-      setError('Не удалось загрузить товары. Попробуйте позже.');
-      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -98,12 +96,15 @@ export const ProductsPage: React.FC = () => {
     setCurrentPage(1);
   }, []);
 
-  const handleProductClick = useCallback((product: Product) => {
-    navigate(`/products/${product.documentId}`);
-  }, []);
+  const handleProductClick = useCallback(
+    (product: Product) => {
+      navigate(`/products/${product.documentId}`);
+    },
+    [navigate]
+  );
 
-  const handleAddToCart = useCallback((product: Product) => {
-    console.log('Added to cart:', product); // change
+  const handleAddToCart = useCallback(() => {
+    // console.log('Added to cart:', product); change
   }, []);
 
   if (loading && currentPage === 1 && products.length === 0) {

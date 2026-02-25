@@ -1,13 +1,14 @@
-import { api } from 'shared/api';
-import type { ProductsResponse, ProductResponse, ProductCategory } from './types';
 import qs from 'qs';
+import { api } from 'shared/api';
 import { getRandomItems } from 'shared/getRandomItems';
+
+import type { ProductsResponse, ProductResponse, ProductCategory } from './types';
 
 const DEFAULT_POPULATE = ['images', 'productCategory'];
 
 // Для "похожих" товаров
 export const getRandomProducts = async (
-  limit: number = 12,
+  limit = 12,
   currentProduct?: string
 ): Promise<ProductsResponse> => {
   const query = qs.stringify({

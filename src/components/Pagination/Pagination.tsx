@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
 import cn from 'classnames';
+import React, { useMemo } from 'react';
 
-export interface PaginationProps {
+export type PaginationProps = {
   currentPage: number; // Текущая страница
   totalPages: number; // Общее количество страниц
   delta: number; // Количество страниц с двух сторон от текущей
   pageSize: number; // Количесво карточек на страниц
   onPageChange: (page: number) => void; //Callback при смене страницы
   className?: string;
-}
+};
 
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
@@ -17,14 +17,14 @@ export const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   className,
 }) => {
-  const leftSiblingIndex = Math.max(currentPage - delta, 1);
-  const rightSiblingIndex = Math.min(currentPage + delta, totalPages);
-
-  const shouldShowLeftEllipsis = leftSiblingIndex > 2;
-  const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
-
   const pages = useMemo(() => {
-    var result = [];
+    const result = [];
+
+    const leftSiblingIndex = Math.max(currentPage - delta, 1);
+    const rightSiblingIndex = Math.min(currentPage + delta, totalPages);
+
+    const shouldShowLeftEllipsis = leftSiblingIndex > 2;
+    const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
 
     result.push(1);
 
@@ -56,7 +56,7 @@ export const Pagination: React.FC<PaginationProps> = ({
     }
 
     return result;
-  }, [currentPage, totalPages]);
+  }, [currentPage, totalPages, delta]);
 
   const handlePrevious = () => {
     if (currentPage > 1) {

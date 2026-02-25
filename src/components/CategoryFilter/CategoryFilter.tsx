@@ -1,11 +1,11 @@
 import { type ProductCategory } from 'entities/Product/types';
 import './categoryFilter.scss';
 
-interface CategoryFilterProps {
+type CategoryFilterProps = {
   categories: ProductCategory[];
   selectedCategory: string | null;
   onSelectCategory: (category: string | null) => void;
-}
+};
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,

@@ -1,6 +1,7 @@
 import * as React from 'react';
+
 import Icon, { type IconProps } from '../Icon';
-import './arrowIcon.scss'
+import './arrowIcon.scss';
 
 const ArrowIcon: React.FC<IconProps> = (props, direction?: 'left' | 'right' | '') => (
   <Icon {...props}>
