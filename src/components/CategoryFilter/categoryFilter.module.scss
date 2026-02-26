@@ -1,0 +1,28 @@
+@use 'styles/main.scss' as *;
+
+.category-filter {
+  @include flex-container(row, center);
+  flex-wrap: wrap;
+  gap: $space-xxs;
+  margin-bottom: 1rem;
+
+  &__chip {
+    padding: 8px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(&_selected) {
+      background: #e8e8e8;
+      border-color: #ccc;
+    }
+
+    &_selected {
+      background: $accent-color;
+      color: $background-color;
+      border-color: $button-primary-bg-active;
+    }
+  }
+}

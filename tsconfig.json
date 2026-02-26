@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "types": ["vite-plugin-svgr/client"],
+    "baseUrl": "src",
+    "paths": {
+      "components/*": ["components/*"],
+      "config/*": ["config/*"],
+      "assets/*": ["assets/*"],
+      "pages/*": ["pages/*"],
+      "entities/*": ["entities/*"],
+      "shared/*": ["shared/*"],
+      "styles/*": ["styles/*"]
+    }
+  }
+}

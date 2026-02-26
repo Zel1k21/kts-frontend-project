@@ -1,0 +1,41 @@
+import cn from 'classnames';
+import React from 'react';
+
+import Loader from '../Loader';
+
+import styles from './button.module.scss';
+
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  /** Состояние загрузки */
+  loading?: boolean;
+  /** Текст кнопки */
+  children: React.ReactNode;
+};
+
+const Button: React.FC<ButtonProps> = ({
+  className,
+  loading = false,
+  disabled = false,
+  children,
+  ...buttonProps
+}) => {
+  const buttonClassName = cn(
+    styles.button,
+
+    className
+  );
+
+  return (
+    <button
+      className={buttonClassName}
+      disabled={disabled || loading}
+      onClick={buttonProps.onClick}
+      {...buttonProps}
+    >
+      {loading && <Loader size="s" color="white" />}
+      {children}
+    </button>
+  );
+};
+
+export default Button;

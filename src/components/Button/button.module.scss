@@ -1,0 +1,22 @@
+@use 'styles/main.scss' as *;
+
+.button {
+  padding: $space-s $space-l;
+  @include flex-container(row, space-evenly, center);
+  background-color: $accent-color;
+  border: none;
+  color: $background-color;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $button-primary-bg-hover;
+  }
+
+  &:active {
+    background-color: $button-primary-bg-active;
+  }
+
+  &:disabled {
+    background-color: $button-primary-bg-disabled;
+  }
+}

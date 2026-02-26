@@ -1,0 +1,19 @@
+@use 'styles/main.scss' as *;
+
+.icon {
+  display: inline-block;
+  verticalalign: middle;
+  color: inherit;
+
+  &-color_primary {
+    color: $primary-color;
+  }
+
+  &-color_secondary {
+    color: $secondary-color;
+  }
+
+  &-color_accent {
+    color: $accent-color;
+  }
+}

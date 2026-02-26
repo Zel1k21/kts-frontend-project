@@ -1,0 +1,8 @@
+@use 'styles/main.scss' as *;
+.app {
+  display: flex;
+  flex-direction: column;
+  padding-top: $navbar-height;
+  width: 100%;
+  flex: 1;
+}
