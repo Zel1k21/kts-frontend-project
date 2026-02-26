@@ -1,21 +1,18 @@
 @use 'styles/main.scss' as *;
 
 .products-page {
-  padding: 2rem 6.25rem;
   background-color: $page-background-color;
   display: flex;
   flex-direction: column;
 
-  @media (min-width: $tablet) {
-    padding: 3rem 2rem;
-  }
-
-  @media (min-width: $desktop) {
-    padding: 4rem 4rem;
-  }
-
   .product-card {
     border-radius: 8px;
+  }
+
+  &-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -27,23 +24,15 @@
   margin-bottom: 1.5rem;
 }
 
-product-page-search {
+.product-page-search {
   flex: 1;
-  max-width: 100%;
-
-  @media (min-width: $tablet) {
-    max-width: 400px;
-  }
+  width: 80%;
 }
 
 .products-count {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.search-input {
-  margin-bottom: 1rem;
 }
 
 .pagination {

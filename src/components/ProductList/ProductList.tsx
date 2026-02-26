@@ -2,7 +2,8 @@ import Button from 'components/Button';
 import Card, { type CardProps } from 'components/Card';
 import { type Product } from 'entities/Product/types';
 import React, { useCallback, useRef } from 'react';
-import './productList.scss';
+
+import styles from './productList.module.scss';
 
 type ProductListProps = {
   products: Product[];
@@ -45,7 +46,7 @@ export const ProductList: React.FC<ProductListProps> = ({
         </Button>
       ),
       onClick: onProductClick ? () => onProductClick(product) : undefined,
-      className: 'product-card',
+      className: styles['product-card'],
     };
   };
 
@@ -83,10 +84,14 @@ export const ProductList: React.FC<ProductListProps> = ({
     [isWidget]
   );
 
+  if (!products.length) {
+    return null;
+  }
+
   return (
     <div
       ref={scrollContainerRef}
-      className={`products-list ${className || ''} ${isWidget ? 'products-list--widget' : ''}`}
+      className={`${styles['products-list']} ${className || ''} ${isWidget ? styles['products-list__widget'] : ''}`}
       onMouseDown={handleMouseDown}
       onMouseLeave={handleMouseLeave}
       onMouseUp={handleMouseUp}

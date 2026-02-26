@@ -1,5 +1,5 @@
-import ProductPage from 'pages/Product/ProductPage';
-import { ProductsPage } from 'pages/Product/ProductsPage';
+import ProductPage from 'pages/ProductPage/ProductPage';
+import { ProductsPage } from 'pages/ProductsPage/ProductsPage';
 import { type RouteObject, Navigate } from 'react-router';
 
 import App from '../App';
@@ -24,6 +24,10 @@ export const routesConfig: RouteObject[] = [
     path: routes.main.mask,
     element: <App />,
     children: [
+      {
+        path: routes.main.mask,
+        element: <Navigate to={routes.products.mask} replace />,
+      },
       {
         path: routes.products.mask,
         element: <ProductsPage />,

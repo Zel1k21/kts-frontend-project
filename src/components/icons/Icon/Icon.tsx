@@ -1,10 +1,11 @@
+import cn from 'classnames';
 import * as React from 'react';
 
-import './icon.scss';
+import styles from './icon.module.scss';
 
 export type IconProps = React.SVGAttributes<SVGElement> & {
   className?: string;
-  color?: 'primary' | 'secondary' | 'accent';
+  color: 'primary' | 'secondary' | 'accent';
   width?: number;
   height?: number;
 };
@@ -17,16 +18,15 @@ const Icon: React.FC<React.PropsWithChildren<IconProps>> = ({
   height,
   ...svgProps
 }) => {
-  const colorClass = color ? `icon-color-${color}` : '';
+  const colorClass = cn(
+    color === 'primary' && styles['icon-color_primary'],
+    color === 'secondary' && styles['icon-color_secondary'],
+    color === 'accent' && styles['icon-color_accent']
+  );
   const fullClassName = [className, 'icon', colorClass].join(' ');
 
   return (
     <svg
-      style={{
-        display: 'inline-block',
-        verticalAlign: 'middle',
-        color: 'inherit', // mb fix
-      }}
       width={width || 24}
       height={height || 24}
       className={fullClassName}

@@ -1,0 +1,24 @@
+@use 'styles/main.scss' as *;
+
+.pagination {
+  @include flex-container(row, center, center);
+  margin-bottom: 1rem;
+
+  &-btn {
+    @include flex-container(row, center, center);
+    text-align: center;
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+
+    &_active {
+      background-color: $accent-color;
+      border-radius: 5px;
+      color: $background-color;
+    }
+
+    &__ellipsis {
+      cursor: default;
+    }
+  }
+}

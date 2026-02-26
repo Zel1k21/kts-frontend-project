@@ -126,7 +126,7 @@ export const ProductsPage: React.FC = () => {
         <h1>Каталог товаров</h1>
       </header>
 
-      <div className="product-page-filters">
+      <div className="products-page-filters">
         <ProductSearch
           className="product-page-search"
           onSearch={handleSearch}

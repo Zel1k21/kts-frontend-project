@@ -82,10 +82,5 @@ export type ProductResponse = {
 export type ProductsPageResponse = {
   products: Product[];
   categories: ProductCategory[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    pageCount: number;
-    total: number;
-  };
+  pagination: Pagination;
 };

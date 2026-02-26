@@ -1,7 +1,8 @@
 import cn from 'classnames';
 import Text from 'components/Text';
 import React from 'react';
-import './card.scss';
+
+import styles from './card.module.scss';
 
 export type CardProps = {
   /** Дополнительный classname */
@@ -32,14 +33,14 @@ const Card: React.FC<CardProps> = ({
   onClick,
   actionSlot,
 }) => {
-  const cardClassName = cn('card', className, { 'card--clickable': onClick });
+  const cardClassName = cn(styles.card, className, { [styles.card_clickable]: onClick });
   return (
     <div className={cardClassName} onClick={onClick}>
-      <div className="card-header">
-        <img src={image} alt="" className="card-image" />
+      <div className={styles.card__header}>
+        <img src={image} alt="" className={styles.card__image} />
       </div>
-      <div className="card-body">
-        <div className="card-text-content">
+      <div className={styles.card__body}>
+        <div className={styles['card__text-content']}>
           {captionSlot && (
             <Text className="card-caption" view="p-14" color="secondary" weight="medium">
               {captionSlot}
@@ -59,10 +60,12 @@ const Card: React.FC<CardProps> = ({
             {subtitle}
           </Text>
         </div>
-        <div className="card-functional-content">
-          {contentSlot && <div className="card-content-slot">{contentSlot}</div>}
-          {actionSlot && <div className="card-content-action">{actionSlot}</div>}
-        </div>
+        {contentSlot || actionSlot ? (
+          <div className={styles['card__functional-content']}>
+            {contentSlot && <div className="card-content-slot">{contentSlot}</div>}
+            {actionSlot && <div className="card-content-action">{actionSlot}</div>}
+          </div>
+        ) : null}
       </div>
     </div>
   );

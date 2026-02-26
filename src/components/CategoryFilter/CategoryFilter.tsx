@@ -1,5 +1,7 @@
+import cn from 'classnames';
 import { type ProductCategory } from 'entities/Product/types';
-import './categoryFilter.scss';
+
+import styles from './categoryFilter.module.scss';
 
 type CategoryFilterProps = {
   categories: ProductCategory[];
@@ -13,9 +15,11 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
 }) => {
   return (
-    <div className="category-filter">
+    <div className={styles['category-filter']}>
       <button
-        className={`category-filter__chip ${selectedCategory === null ? 'category-filter__chip--active' : ''}`}
+        className={cn(styles['category-filter__chip'], {
+          [styles['category-filter__chip_selected']]: selectedCategory === null,
+        })}
         onClick={() => onSelectCategory(null)}
       >
         All
@@ -23,7 +27,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       {categories.map((cat) => (
         <button
           key={cat.title}
-          className={`category-filter__chip ${selectedCategory === cat.title ? 'category-filter__chip--active' : ''}`}
+          className={cn(styles['category-filter__chip'], {
+            [styles['category-filter__chip_selected']]: selectedCategory === cat.title,
+          })}
           onClick={() => onSelectCategory(cat.title)}
           type="button"
         >

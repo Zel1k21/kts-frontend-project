@@ -4,3 +4,8 @@
   align-items: $align-items;
   flex-direction: $direction;
 }
+
+@mixin square($size) {
+  width: $size;
+  height: $size;
+}

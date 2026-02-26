@@ -3,20 +3,15 @@
 .products-list {
   margin: 2.25rem 0;
   display: grid;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1.875rem 5rem;
   grid-template-columns: repeat(auto-fill, $card-width);
 
-  @media (min-width: $mobile) {
-    justify-content: center;
-  }
-
-  &--widget {
+  &__widget {
     display: flex;
     flex-direction: row;
     gap: 1.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: auto hidden;
     scroll-behavior: smooth;
     cursor: grab;
     user-select: none;
@@ -51,7 +46,7 @@
         cursor: grabbing;
       }
 
-      &--widget {
+      &__widget {
         .card {
           padding-bottom: 1rem;
 

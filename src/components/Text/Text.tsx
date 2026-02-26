@@ -39,7 +39,6 @@ const Text: React.FC<TextProps> = ({
         WebkitLineClamp: maxLines,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        gap: '10px',
       } as React.CSSProperties)
     : undefined;
 

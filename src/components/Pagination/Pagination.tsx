@@ -1,5 +1,8 @@
-import cn from 'classnames';
 import React, { useMemo } from 'react';
+
+import OffsetButton from './OffsetButtons';
+import PageButton from './PageButton';
+import styles from './Pagination.module.scss';
 
 export type PaginationProps = {
   currentPage: number; // Текущая страница
@@ -7,7 +10,6 @@ export type PaginationProps = {
   delta: number; // Количество страниц с двух сторон от текущей
   pageSize: number; // Количесво карточек на страниц
   onPageChange: (page: number) => void; //Callback при смене страницы
-  className?: string;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({
@@ -15,7 +17,6 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   delta = 2,
   onPageChange,
-  className,
 }) => {
   const pages = useMemo(() => {
     const result = [];
@@ -77,77 +78,30 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className={cn('pagination', className)}>
-      <button
-        className={cn('pagination-btn', 'pagination-btn--arrow', {
-          'pagination-btn--disabled': currentPage === 1,
-        })}
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        aria-label="Предыдущая страница"
-        aria-disabled={currentPage === 1}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          style={{
-            display: 'inline-block',
-            verticalAlign: 'middle',
-          }}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m12 19-7-7 7-7" />
-          <path d="M19 12H5" />
-        </svg>
-      </button>
+    <div className={styles.pagination}>
+      <OffsetButton
+        handlePageClick={handlePrevious}
+        page={currentPage}
+        direction="left"
+        totalPages={totalPages}
+      />
       {pages.map((page) => {
         const isActive = page === currentPage;
         return (
-          <button
+          <PageButton
             key={page}
-            className={cn('pagination-btn', { 'pagination-btn--active': isActive })}
+            page={page}
+            isActive={isActive}
             onClick={() => handlePageClick(page)}
-            aria-label={`Страница ${page}`}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {page}
-          </button>
+          />
         );
       })}
-      <button
-        className={cn('pagination-btn', 'pagination-btn--arrow', {
-          'pagination-btn--disabled': currentPage === totalPages,
-        })}
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-        aria-label="Следующая страница"
-        aria-disabled={currentPage === totalPages}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          style={{
-            display: 'inline-block',
-            verticalAlign: 'middle',
-          }}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M5 12h14" />
-          <path d="m12 5 7 7-7 7" />
-        </svg>
-      </button>
+      <OffsetButton
+        handlePageClick={handleNext}
+        page={currentPage}
+        direction="right"
+        totalPages={totalPages}
+      />
     </div>
   );
 };

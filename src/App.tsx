@@ -1,12 +1,13 @@
 import { Navbar } from 'components/Navbar';
 import { Outlet } from 'react-router';
-import './App.scss';
+
+import styles from './App.module.scss';
 
 function App() {
   return (
     <div>
       <Navbar />
-      <div className="app">
+      <div className={styles.app}>
         <Outlet />
       </div>
     </div>

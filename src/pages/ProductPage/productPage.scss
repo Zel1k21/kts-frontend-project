@@ -62,8 +62,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    @include square(40px);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.9);
     border: none;
@@ -138,7 +137,7 @@
   &__description {
     font-size: 16px;
     line-height: 1.6;
-    color: #666;
+    color: $gray-color;
     margin: 0;
   }
 
@@ -174,7 +173,7 @@
     }
 
     &-value {
-      color: #666;
+      color: $gray-color;
       font-size: 14px;
     }
   }
@@ -198,7 +197,7 @@
 
   &__category {
     font-size: 14px;
-    color: #666;
+    color: $gray-color;
   }
 
   &__actions {
@@ -253,7 +252,7 @@
 
   &__loader {
     font-size: 18px;
-    color: #666;
+    color: $gray-color;
   }
 
   &__error {
@@ -265,7 +264,7 @@
     }
 
     p {
-      color: #666;
+      color: $gray-color;
       margin-bottom: 20px;
     }
 

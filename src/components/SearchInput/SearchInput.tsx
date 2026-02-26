@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import Input, { type InputProps } from 'components/Input';
 import React, { useEffect } from 'react';
-import { useDebounce } from 'shared/useDebounce';
+import { useDebounce } from 'shared/hooks/useDebounce';
 
 export type SearchInputProps = {
   //callback с значение для useDebounce
@@ -28,7 +28,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     onDebounceChange(debouncedValue);
   }, [debouncedValue, onDebounceChange]);
   return (
-    <div className={cn('search-input', className)}>
+    <div className={cn('search-input', className)} style={{ marginBottom: '1rem' }}>
       <Input
         value={value}
         onChange={onChange}

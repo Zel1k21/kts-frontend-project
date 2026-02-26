@@ -1,6 +1,6 @@
 import qs from 'qs';
-import { api } from 'shared/api';
-import { getRandomItems } from 'shared/getRandomItems';
+import { getRandomItems } from 'shared/hooks/getRandomItems';
+import { api } from 'shared/utils/api';
 
 import type { ProductsResponse, ProductResponse, ProductCategory } from './types';
 
@@ -103,11 +103,8 @@ export const getProduct = async (
 ): Promise<ProductResponse> => {
   const query = qs.stringify({
     populate,
-    filters: {
-      documentId: { $eq: documentId },
-    },
   });
 
-  const response = await api.get<ProductResponse>(`/products?${query}`);
+  const response = await api.get<ProductResponse>(`/products/${documentId}?${query}`);
   return response.data;
 };

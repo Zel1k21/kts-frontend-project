@@ -1,26 +1,32 @@
 import React from 'react';
 
-import './loader.scss';
+import styles from './Loader.module.scss';
 
 export type LoaderProps = {
   /** Размер */
-  size?: 's' | 'm' | 'l';
+  size: 's' | 'm' | 'l';
   /** Дополнительный класс */
   className?: string;
   color?: 'white' | 'accent';
 };
 
-const Loader: React.FC<LoaderProps> = ({ size, className, color = 'accent' }) => {
+const BOX_SIZE = {
+  s: 24,
+  m: 48,
+  l: 60,
+};
+
+const Loader: React.FC<LoaderProps> = ({ size = 'l', className, color = 'accent' }) => {
   return (
     <div
-      className={`loader-box ${className}`}
+      className={styles['loader-box'] + ' ' + className}
       style={{
-        width: size === 'm' ? 48 : size === 's' ? 24 : 60,
-        height: size === 'm' ? 48 : size === 's' ? 24 : 60,
+        width: BOX_SIZE[size],
+        height: BOX_SIZE[size],
       }}
     >
       <svg
-        className={'loading-spiner'}
+        className={styles['loading-spinner']}
         width={size === 'm' ? 32 : size === 's' ? 16 : 40}
         height={size === 'm' ? 32 : size === 's' ? 16 : 40}
         viewBox="0 0 40 40"

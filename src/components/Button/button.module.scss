@@ -2,25 +2,21 @@
 
 .button {
   padding: $space-s $space-l;
+  @include flex-container(row, space-evenly, center);
   background-color: $accent-color;
-  gap: $space-xxs;
   border: none;
   color: $background-color;
   cursor: pointer;
 
-  &:hover:not(.button--disabled):not(.button--loading) {
+  &:hover {
     background-color: $button-primary-bg-hover;
   }
 
   &:active {
     background-color: $button-primary-bg-active;
   }
-}
 
-.button--disabled {
-  background-color: $button-primary-bg-disabled;
-}
-
-.button--loading {
-  @include flex-container(row, space-evenly, center);
+  &:disabled {
+    background-color: $button-primary-bg-disabled;
+  }
 }

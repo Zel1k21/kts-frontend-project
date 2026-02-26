@@ -1,8 +1,8 @@
-/* @use './Roboto/fonts'; */
+@use './Roboto/fonts';
 
 html,
 body {
-  font-family: 'Roboto';
+  font-family: 'Roboto', 'Arial', sans-serif;
   margin: 0;
   padding: 0;
 }

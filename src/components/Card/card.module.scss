@@ -1,0 +1,54 @@
+@use 'styles/main.scss' as *;
+
+.card {
+  gap: $space-xl;
+  padding-bottom: $space-xl;
+  background-color: $background-color;
+  @include flex-container(column, center);
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+
+  &_clickable {
+    cursor: pointer;
+  }
+
+  &__header {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+  }
+
+  &__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $background-color;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  &__body {
+    @include flex-container(column, center, relative);
+    width: 100%;
+    padding-left: $space-xs;
+    padding-right: $space-xs;
+    gap: $space-l;
+  }
+
+  &__text-content {
+    @include flex-container(column, center, flex-start);
+    gap: 8px;
+  }
+
+  &__functional-content {
+    @include flex-container(row, space-between, center);
+    gap: 8px;
+  }
+}
