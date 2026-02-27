@@ -1,15 +1,19 @@
 import React, { createContext, useContext } from 'react';
-import { productStore } from 'store/ProductStore';
+import { ProductStore } from 'store/ProductPageStore';
+import { ProductsStore } from 'store/ProductsPageStore';
 
 type IStore = {
-  products: typeof productStore;
+  products: typeof ProductsStore;
+  product: typeof ProductStore;
 };
 
 export const StoreContext = createContext<IStore | null>(null);
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <StoreContext.Provider value={{ products: productStore }}>{children}</StoreContext.Provider>
+    <StoreContext.Provider value={{ products: ProductsStore, product: ProductStore }}>
+      {children}
+    </StoreContext.Provider>
   );
 };
 

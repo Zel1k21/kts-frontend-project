@@ -1,16 +1,16 @@
-import { useNavigate } from 'react-router-dom';
-import { runInAction } from 'mobx';
-
-import { observer } from 'mobx-react-lite';
-import { useStore } from 'shared/hooks/StoreContext';
-import type { Product } from 'entities/Product/types';
-import ProductSearch from './ProductSearch';
 import CategoryFilter from 'components/CategoryFilter';
-import ProductList from 'components/ProductList';
 import Pagination from 'components/Pagination';
+import ProductList from 'components/ProductList';
 import Text from 'components/Text';
+import type { Product } from 'entities/Product/types';
+import { runInAction } from 'mobx';
+import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useStore } from 'shared/hooks/StoreContext';
 import { useQueryParams, withDefault, NumberParam, StringParam } from 'use-query-params';
+
+import ProductSearch from './ProductSearch';
 
 import './ProductsPage.scss';
 
@@ -40,7 +40,7 @@ export const ProductsPage: React.FC = observer(() => {
     });
 
     products.initialize();
-  }, []);
+  });
 
   // Реакция на изменение параметров запроса
   useEffect(() => {
@@ -53,7 +53,7 @@ export const ProductsPage: React.FC = observer(() => {
       });
       products.fetchProducts();
     }
-  }, [query.page, query.search, query.category, query.sort]);
+  }, [query.page, query.search, query.category, query.sort, products]);
 
   // Обработка сброса страницы при пустом ответе
   useEffect(() => {
@@ -64,7 +64,7 @@ export const ProductsPage: React.FC = observer(() => {
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [products.pageWasReset]);
+  }, [products.pageWasReset, products, setQuery]);
 
   // Обработчик поиска
   const handleSearch = (query: string) => {

@@ -6,14 +6,14 @@ const PAGE_SIZE = 4;
 const DEFAULT_POPULATE = ['productCategory', 'images'];
 
 // Интерфейс параметров запроса
-export interface ProductQueryParams {
+export type ProductQueryParams = {
   page?: number;
   search?: string;
   category?: string | null;
   sort?: string;
-}
+};
 
-class ProductStore {
+class ProductsPageStore {
   productsList: Product[] = [];
   loading = false;
   error: string | null = null;
@@ -172,4 +172,4 @@ class ProductStore {
   }
 }
 
-export const productStore = new ProductStore();
+export const ProductsStore = new ProductsPageStore();

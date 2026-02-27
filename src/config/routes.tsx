@@ -1,7 +1,8 @@
-import { Route, Navigate } from 'react-router-dom';
-import App from '../App';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import { ProductsPage } from 'pages/ProductsPage/ProductsPage';
+import { Route, Navigate } from 'react-router-dom';
+
+import App from '../App';
 
 export const routes = {
   main: {

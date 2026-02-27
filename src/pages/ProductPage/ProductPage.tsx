@@ -1,112 +1,47 @@
 import { ProductList } from 'components/ProductList/ProductList';
 import Text from 'components/Text';
-import { getRandomProducts, getProduct } from 'entities/Product/api';
-import type { Product, ProductsResponse } from 'entities/Product/types';
-import React, { useCallback, useEffect, useState } from 'react';
+import type { Product } from 'entities/Product/types';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useStore } from 'shared/hooks/StoreContext';
+
 import './productPage.scss';
 
-export const ProductPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const ProductPage: React.FC = observer(() => {
+  const store = useStore().product;
+  const product = store.product;
+  const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-
-  const fetchProducts = useCallback(async () => {
-    try {
-      const response: ProductsResponse = await getRandomProducts(12, id);
-      setRelatedProducts(response.data);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!id) {
-        setError('Product ID is missing');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const response = await getProduct(id);
-        const productData = Array.isArray(response.data) ? response.data[0] : response.data;
-        setProduct(productData);
-        setError(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    store.setProductId(productId);
+    store.initialize();
+    store.setProductImages(product?.images || []);
+  }, [productId, store, product?.images]);
 
   const nextImage = useCallback(() => {
-    const images = product?.images;
-    if (!images || images.length === 0) return;
-
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
-  }, [product?.images]);
+    store.setCurrentImageIndex((store.currentImageIndex + 1) % store.productImages.length);
+  }, [store]);
 
   const prevImage = useCallback(() => {
-    const images = product?.images;
-    if (!images || images.length === 0) return;
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  }, [product?.images]);
+    store.setCurrentImageIndex(
+      (store.currentImageIndex - 1 + store.productImages.length) % store.productImages.length
+    );
+  }, [store]);
 
   const handleBack = () => {
-    navigate(-1);
+    window.history.back();
   };
 
-  const handleBuyNow = () => {
-    // console.log('Buy now:', product);
+  const handleProductClick = (product: Product) => {
+    navigate(`/products/${product.documentId}`);
   };
 
-  const handleProductClick = useCallback(
-    (product: Product) => {
-      navigate(`/products/${product.documentId}`);
-    },
-    [navigate]
-  );
+  const currentImage = store.product?.images?.[store.currentImageIndex];
 
-  const handleAddToCart = () => {
-    // console.log('Add to cart:', product);
-  };
-
-  const currentImage = product?.images?.[currentImageIndex];
-
-  if (loading) {
-    return (
-      <div className="product-page loading">
-        <div className="product-page-loader">Загрузка...</div>
-      </div>
-    );
-  }
-
-  if (error || !product) {
-    return (
-      <div className="product-page error">
-        <button className="product-page__back-btn" onClick={handleBack}>
-          ← Назад
-        </button>
-        <div className="product-page-error">
-          <h2>Ошибка</h2>
-          <p>{error || 'Товар не найден'}</p>
-          <button onClick={() => navigate('/products')}>Вернуться в каталог</button>
-        </div>
-      </div>
-    );
+  if (product === null) {
+    return null;
   }
 
   return (
@@ -152,9 +87,9 @@ export const ProductPage: React.FC = () => {
                 <button
                   key={image.id || index}
                   className={`product-page__thumbnail ${
-                    index === currentImageIndex ? 'active' : ''
+                    index === store.currentImageIndex ? 'active' : ''
                   }`}
-                  onClick={() => setCurrentImageIndex(index)}
+                  onClick={() => store.setCurrentImageIndex(index)}
                   aria-label={`Изображение ${index + 1}`}
                 >
                   <img
@@ -206,14 +141,14 @@ export const ProductPage: React.FC = () => {
           <div className="product-page__actions">
             <button
               className="product-page__btn product-page__btn--buy"
-              onClick={handleBuyNow}
+              // onClick={handleBuyNow}
               disabled={!product.isInStock}
             >
               Купить
             </button>
             <button
               className="product-page__btn product-page__btn--cart"
-              onClick={handleAddToCart}
+              // onClick={handleAddToCart}
               disabled={!product.isInStock}
             >
               В корзину
@@ -227,13 +162,13 @@ export const ProductPage: React.FC = () => {
         </Text>
         <ProductList
           isWidget={true}
-          products={relatedProducts}
+          products={store.relatedProducts}
           onProductClick={(product) => handleProductClick(product)}
-          onAddToCart={handleAddToCart}
+          // onAddToCart={handleAddToCart}
         />
       </div>
     </div>
   );
-};
+});
 
 export default ProductPage;
