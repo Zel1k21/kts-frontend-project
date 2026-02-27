@@ -1,8 +1,7 @@
+import { Route, Navigate } from 'react-router-dom';
+import App from '../App';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import { ProductsPage } from 'pages/ProductsPage/ProductsPage';
-import { type RouteObject, Navigate } from 'react-router';
-
-import App from '../App';
 
 export const routes = {
   main: {
@@ -19,29 +18,18 @@ export const routes = {
   },
 };
 
-export const routesConfig: RouteObject[] = [
-  {
-    path: routes.main.mask,
-    element: <App />,
-    children: [
-      {
-        path: routes.main.mask,
-        element: <Navigate to={routes.products.mask} replace />,
-      },
-      {
-        path: routes.products.mask,
-        element: <ProductsPage />,
-      },
-      {
-        path: routes.product.mask,
-        element: <ProductPage />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <Navigate to={routes.main.mask} replace />,
-  },
-];
+export const routesConfig = (
+  <>
+    <Route path={routes.main.mask} element={<App />}>
+      <Route index element={<Navigate to={routes.products.mask} replace />} />
+
+      <Route path={routes.products.mask} element={<ProductsPage />} />
+
+      <Route path={routes.product.mask} element={<ProductPage />} />
+    </Route>
+
+    <Route path="*" element={<Navigate to={routes.main.mask} replace />} />
+  </>
+);
 
 export default routes;

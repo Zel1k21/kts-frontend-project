@@ -3,7 +3,7 @@ import Text from 'components/Text';
 import { getRandomProducts, getProduct } from 'entities/Product/api';
 import type { Product, ProductsResponse } from 'entities/Product/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate } from 'react-router-dom';
 import './productPage.scss';
 
 export const ProductPage: React.FC = () => {

@@ -1,7 +1,7 @@
 import Text from 'components/Text';
 import routes from 'config/routes';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import styles from './navbar.module.scss';
 

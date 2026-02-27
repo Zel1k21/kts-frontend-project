@@ -4,7 +4,7 @@
   gap: $space-xl;
   padding-bottom: $space-xl;
   background-color: $background-color;
-  @include flex-container(column, center);
+  @include flex-container(column, space-between);
   overflow: hidden;
 
   &:hover {
