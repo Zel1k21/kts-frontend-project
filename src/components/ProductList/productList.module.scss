@@ -1,5 +1,9 @@
 @use 'styles/main.scss' as *;
 
+.product-card {
+  border-radius: 8px;
+}
+
 .products-list {
   margin: 2.25rem 0;
   display: grid;
@@ -37,7 +41,6 @@
 
     .product-card {
       flex: 0 0 auto;
-      border-radius: 8px;
       width: 200px;
       max-width: 200px;
       cursor: grab;

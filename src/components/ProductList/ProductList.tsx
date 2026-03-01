@@ -8,7 +8,7 @@ import styles from './productList.module.scss';
 type ProductListProps = {
   products: Product[];
   onProductClick?: (product: Product) => void;
-  onAddToCart?: (product: Product) => void;
+  onAddToCart?: (product: Product, quantity: number) => void;
   isWidget?: boolean;
   className?: string;
 };
@@ -25,6 +25,8 @@ export const ProductList: React.FC<ProductListProps> = ({
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
+  const quantity = 1;
+
   const mapProductToCartProps = (product: Product): CardProps => {
     const imageUrl = product.images?.[0]?.url || '/placeholder-product.jpg';
     const category = product.productCategory?.title;
@@ -39,7 +41,7 @@ export const ProductList: React.FC<ProductListProps> = ({
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            onAddToCart(product);
+            onAddToCart(product, quantity);
           }}
         >
           В корзину

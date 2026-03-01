@@ -1,3 +1,4 @@
+import { CartPage } from 'pages/CartPage/CartPage';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import { ProductsPage } from 'pages/ProductsPage/ProductsPage';
 import { Route, Navigate } from 'react-router-dom';
@@ -17,6 +18,10 @@ export const routes = {
     mask: '/products/:id',
     create: (id: string) => `/products/${id}`,
   },
+  cart: {
+    mask: '/cart',
+    create: () => '/cart',
+  },
 };
 
 export const routesConfig = (
@@ -27,6 +32,8 @@ export const routesConfig = (
       <Route path={routes.products.mask} element={<ProductsPage />} />
 
       <Route path={routes.product.mask} element={<ProductPage />} />
+
+      <Route path={routes.cart.mask} element={<CartPage />} />
     </Route>
 
     <Route path="*" element={<Navigate to={routes.main.mask} replace />} />

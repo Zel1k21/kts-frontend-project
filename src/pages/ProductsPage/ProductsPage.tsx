@@ -11,8 +11,7 @@ import { useStore } from 'shared/hooks/StoreContext';
 import { useQueryParams, withDefault, NumberParam, StringParam } from 'use-query-params';
 
 import ProductSearch from './ProductSearch';
-
-import './ProductsPage.scss';
+import styles from './productsPage.module.scss';
 
 // Конфигурация параметров запроса
 const queryConfig = {
@@ -25,6 +24,7 @@ const queryConfig = {
 export const ProductsPage: React.FC = observer(() => {
   const store = useStore();
   const products = store.products;
+  const cart = store.cart;
   const navigate = useNavigate();
 
   const [query, setQuery] = useQueryParams(queryConfig);
@@ -90,15 +90,20 @@ export const ProductsPage: React.FC = observer(() => {
     navigate(`/products/${product.documentId}`);
   };
 
+  // Обработчик добавления в корзину
+  const handleAddToCart = (product: Product, quantity: number) => {
+    cart.addToCart(product.id, quantity);
+  };
+
   // Плейсхолдер загрузки
   if (products.loading && !products.hasProducts) {
-    return <div className="products-page-loader">Загрузка товаров...</div>;
+    return <div className={styles['products-page__loader']}>Загрузка товаров...</div>;
   }
 
   // Обработчик ошибки
   if (products.error && !products.hasProducts) {
     return (
-      <div className="products-page-error">
+      <div className={styles['products-page__error']}>
         <p>{products.error}</p>
         <button onClick={() => products.fetchProducts()}>Повторить</button>
       </div>
@@ -106,14 +111,14 @@ export const ProductsPage: React.FC = observer(() => {
   }
 
   return (
-    <div className="products-page">
-      <header className="products-page-header">
+    <div className={styles['products-page']}>
+      <header className={styles['products-page__header']}>
         <h1>Каталог товаров</h1>
       </header>
 
-      <div className="products-page-filters">
+      <div className={styles['products-page__filters']}>
         <ProductSearch
-          className="product-page-search"
+          className={styles['products-page__search']}
           onSearch={handleSearch}
           initialValue={products.searchQuery}
           placeholder="Найти товары..."
@@ -127,14 +132,14 @@ export const ProductsPage: React.FC = observer(() => {
           />
         )}
       </div>
-      <Text view="p-20" weight="bold" className="products-count">
+      <Text view="p-20" weight="bold" className={styles['products-page__products-count']}>
         Всего товаров: {products.productsCount}
       </Text>
 
       <ProductList
         products={products.productsList}
         onProductClick={handleProductClick}
-        // onAddToCart={handleAddToCart}
+        onAddToCart={handleAddToCart}
       />
 
       {products.totalPages > 1 && (
