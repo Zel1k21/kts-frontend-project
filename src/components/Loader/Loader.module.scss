@@ -1,20 +1,18 @@
 @use 'styles/main.scss' as *;
 
 .loader-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-container(column, center, center);
 }
 
-.loading-spiner {
+.loading-spinner {
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }

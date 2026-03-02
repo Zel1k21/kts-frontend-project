@@ -7,6 +7,7 @@
 
   &__related-products {
     margin-top: $space-l;
+    padding: 0 40px;
   }
 
   &__back-btn {
@@ -313,4 +314,9 @@
       height: 60px;
     }
   }
+}
+
+.product-loading,
+.produxt-error {
+  @include loader-container;
 }

@@ -16,10 +16,11 @@
     flex-direction: row;
     gap: 1.5rem;
     overflow: auto hidden;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     cursor: grab;
     user-select: none;
     margin: 1rem 0;
+    justify-content: inherit;
 
     &::-webkit-scrollbar {
       height: 6px;

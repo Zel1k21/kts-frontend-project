@@ -56,21 +56,5 @@
 
 .cart-loading,
 .cart-error {
-  @include flex-container(column, center, center);
-  min-height: 400px;
-  text-align: center;
-
-  h2 {
-    margin-bottom: 10px;
-  }
-
-  button {
-    margin-top: $space-l;
-    padding: $space-xs $space-xl;
-    background: #000;
-    color: white;
-    border: none;
-    border-radius: $space-xxs;
-    cursor: pointer;
-  }
+  @include loader-container;
 }

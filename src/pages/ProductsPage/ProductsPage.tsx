@@ -1,4 +1,5 @@
 import CategoryFilter from 'components/CategoryFilter';
+import Loader from 'components/Loader';
 import Pagination from 'components/Pagination';
 import ProductList from 'components/ProductList';
 import Text from 'components/Text';
@@ -95,17 +96,21 @@ export const ProductsPage: React.FC = observer(() => {
     cart.addToCart(product.id, quantity);
   };
 
-  // Плейсхолдер загрузки
-  if (products.loading && !products.hasProducts) {
-    return <div className={styles['products-page__loader']}>Загрузка товаров...</div>;
+  if (products.loading) {
+    return (
+      <div className={styles['products-loading']}>
+        <Loader size="l" />
+        <p>Loading your cart...</p>
+      </div>
+    );
   }
 
-  // Обработчик ошибки
-  if (products.error && !products.hasProducts) {
+  if (products.error) {
     return (
-      <div className={styles['products-page__error']}>
+      <div className={styles['products-error']}>
+        <h2>Oops! Something went wrong</h2>
         <p>{products.error}</p>
-        <button onClick={() => products.fetchProducts()}>Повторить</button>
+        <button onClick={() => products.fetchProducts}>Try Again</button>
       </div>
     );
   }

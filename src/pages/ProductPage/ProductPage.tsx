@@ -1,3 +1,4 @@
+import Loader from 'components/Loader/Loader';
 import { ProductList } from 'components/ProductList/ProductList';
 import Text from 'components/Text';
 import type { Product } from 'entities/Product/types';
@@ -16,10 +17,10 @@ export const ProductPage: React.FC = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    store.setProductId(productId);
-    store.initialize();
-    store.setProductImages(product?.images || []);
-  }, [productId, store, product?.images]);
+    if (productId) {
+      store.initialize(productId);
+    }
+  }, [productId, store]);
 
   const nextImage = useCallback(() => {
     store.setCurrentImageIndex((store.currentImageIndex + 1) % store.productImages.length);
@@ -37,6 +38,7 @@ export const ProductPage: React.FC = observer(() => {
 
   const handleProductClick = (product: Product) => {
     navigate(`/products/${product.documentId}`);
+    store.fetchProduct(product.documentId);
   };
 
   const handleAddToCart = (product: Product, quantity: number) => {
@@ -44,6 +46,25 @@ export const ProductPage: React.FC = observer(() => {
   };
 
   const currentImage = store.product?.images?.[store.currentImageIndex];
+
+  if (store.loading && product === null) {
+    return (
+      <div className={styles['product-loading']}>
+        <Loader size="l" />
+        <p>Loading product...</p>
+      </div>
+    );
+  }
+
+  if (store.error) {
+    return (
+      <div className={styles['store-error']}>
+        <h2>Oops! Something went wrong</h2>
+        <p>{store.error}</p>
+        <button onClick={() => productId && store.initialize(productId)}>Try Again</button>
+      </div>
+    );
+  }
 
   if (product === null) {
     return null;
@@ -149,7 +170,7 @@ export const ProductPage: React.FC = observer(() => {
             </button>
             <button
               className={styles['product-page__btn'] + ' ' + styles['product-page__btn--cart']}
-              // onClick={handleAddToCart}
+              onClick={() => handleAddToCart(product, 1)}
               disabled={!product.isInStock}
             >
               В корзину

@@ -13,8 +13,6 @@ class ProductPageStore {
   relatedProducts: Product[] = [];
   productImages: Image[] = [];
 
-  isInitialized = false;
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -31,8 +29,8 @@ class ProductPageStore {
     this.relatedProducts = products;
   }
 
-  setProductId(id: string | undefined) {
-    if (id !== undefined) this.productId = id;
+  setProductId(id: string) {
+    this.productId = id;
   }
 
   async fetchProduct(id: string) {
@@ -43,6 +41,8 @@ class ProductPageStore {
       const response = await getProduct(id);
       runInAction(() => {
         this.product = Array.isArray(response.data) ? response.data[0] : response.data;
+        this.productImages = this.product?.images || [];
+        this.currentImageIndex = 0;
       });
     } catch (error) {
       runInAction(() => {
@@ -75,10 +75,9 @@ class ProductPageStore {
     }
   }
 
-  async initialize() {
-    if (this.isInitialized) return;
+  async initialize(productId: string) {
+    this.productId = productId;
     await Promise.all([this.fetchProduct(this.productId), this.fetchRelatedProducts()]);
-    this.isInitialized = true;
   }
 }
 
