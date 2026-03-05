@@ -5,7 +5,6 @@ import { makeAutoObservable, runInAction } from 'mobx';
 const PAGE_SIZE = 4;
 const DEFAULT_POPULATE = ['productCategory', 'images'];
 
-// Интерфейс параметров запроса
 export type ProductQueryParams = {
   page?: number;
   search?: string;
@@ -13,7 +12,7 @@ export type ProductQueryParams = {
   sort?: string;
 };
 
-class ProductsPageStore {
+export class ProductsPageStore {
   productsList: Product[] = [];
   loading = false;
   error: string | null = null;
@@ -170,6 +169,25 @@ class ProductsPageStore {
     await Promise.all([this.fetchCategories(), this.fetchProducts()]);
     this.isInitialized = true;
   }
+
+  dispose() {
+    this.productsList = [];
+    this.loading = false;
+    this.error = null;
+    this.currentPage = 1;
+    this.totalPages = 0;
+    this.productsCount = 0;
+    this.searchQuery = '';
+    this.selectedCategoryTitle = null;
+    this.categories = [];
+    this.isInitialized = false;
+    this.sortBy = 'createdAt:desc';
+    this.pageWasReset = false;
+  }
 }
+
+export const createProductsPageStore = () => {
+  return new ProductsPageStore();
+};
 
 export const ProductsStore = new ProductsPageStore();

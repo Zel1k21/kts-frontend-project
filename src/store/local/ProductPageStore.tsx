@@ -2,7 +2,7 @@ import { getProduct, getRandomProducts } from 'entities/Product/api';
 import type { Product, ProductsResponse, Image } from 'entities/Product/types';
 import { makeAutoObservable, runInAction } from 'mobx';
 
-class ProductPageStore {
+export class ProductPageStore {
   product: Product | null = null;
   loading = false;
   error: string | null = null;
@@ -79,6 +79,20 @@ class ProductPageStore {
     this.productId = productId;
     await Promise.all([this.fetchProduct(this.productId), this.fetchRelatedProducts()]);
   }
+
+  dispose() {
+    this.product = null;
+    this.loading = false;
+    this.error = null;
+    this.productId = '';
+    this.currentImageIndex = 0;
+    this.relatedProducts = [];
+    this.productImages = [];
+  }
 }
+
+export const createProductPageStore = () => {
+  return new ProductPageStore();
+};
 
 export const ProductStore = new ProductPageStore();

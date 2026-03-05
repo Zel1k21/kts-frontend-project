@@ -1,12 +1,13 @@
 import React, { createContext, useContext } from 'react';
-import { cartStore } from 'store/CartStore';
-import { ProductStore } from 'store/ProductPageStore';
-import { ProductsStore } from 'store/ProductsPageStore';
-import { UserStore } from 'store/UserStore';
+import { cartStore, UserStore } from 'store/global';
+import { createProductPageStore, createProductsPageStore } from 'store/local';
 
 type IStore = {
-  products: typeof ProductsStore;
-  product: typeof ProductStore;
+  // Создание локальных хранилищ
+  createProductPageStore: typeof createProductPageStore;
+  createProductsPageStore: typeof createProductsPageStore;
+
+  // Глобальные хранилища
   user: typeof UserStore;
   cart: typeof cartStore;
 };
@@ -16,7 +17,12 @@ export const StoreContext = createContext<IStore | null>(null);
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <StoreContext.Provider
-      value={{ products: ProductsStore, product: ProductStore, user: UserStore, cart: cartStore }}
+      value={{
+        createProductPageStore,
+        createProductsPageStore,
+        user: UserStore,
+        cart: cartStore,
+      }}
     >
       {children}
     </StoreContext.Provider>

@@ -6,9 +6,10 @@ import Text from 'components/Text';
 import type { Product } from 'entities/Product/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from 'shared/hooks/StoreContext';
+import type { ProductsPageStore } from 'store/local';
 import { useQueryParams, withDefault, NumberParam, StringParam } from 'use-query-params';
 
 import ProductSearch from './ProductSearch';
@@ -23,67 +24,83 @@ const queryConfig = {
 };
 
 export const ProductsPage: React.FC = observer(() => {
-  const store = useStore();
-  const products = store.products;
-  const cart = store.cart;
+  const storeContext = useStore();
+  const [productsStore, setProductsStore] = useState<ProductsPageStore | null>(null);
+  const cart = storeContext.cart;
   const navigate = useNavigate();
 
   const [query, setQuery] = useQueryParams(queryConfig);
 
-  // Инициализация при первом рендере
+  // Локальное хранилище при монтировании компонента
   useEffect(() => {
-    products.applyUrlParams({
-      // Синхронизируем параметры запроса с сохраненным состоянием
-      page: query.page,
-      search: query.search,
-      category: query.category,
-      sort: query.sort,
-    });
+    const newStore = storeContext.createProductsPageStore();
+    setProductsStore(newStore);
 
-    products.initialize();
-  });
+    return () => {
+      newStore.dispose();
+    };
+  }, [storeContext]);
 
-  // Реакция на изменение параметров запроса
   useEffect(() => {
-    if (products.isInitialized) {
-      products.applyUrlParams({
+    if (productsStore) {
+      productsStore.applyUrlParams({
         page: query.page,
         search: query.search,
         category: query.category,
         sort: query.sort,
       });
-      products.fetchProducts();
+
+      productsStore.initialize();
     }
-  }, [query.page, query.search, query.category, query.sort, products]);
+  }, [productsStore, query.page, query.search, query.category, query.sort]);
+
+  // Реакция на изменение параметров запроса
+  useEffect(() => {
+    if (productsStore?.isInitialized) {
+      productsStore.applyUrlParams({
+        page: query.page,
+        search: query.search,
+        category: query.category,
+        sort: query.sort,
+      });
+      productsStore.fetchProducts();
+    }
+  }, [query.page, query.search, query.category, query.sort, productsStore]);
 
   // Обработка сброса страницы при пустом ответе
   useEffect(() => {
-    if (products.pageWasReset) {
+    if (productsStore?.pageWasReset) {
       setQuery({ page: 1 }, 'replaceIn'); // Заменяем номер страницы на 1
       runInAction(() => {
-        products.pageWasReset = false;
+        productsStore.pageWasReset = false;
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [products.pageWasReset, products, setQuery]);
+  }, [productsStore, productsStore?.pageWasReset, setQuery]);
 
   // Обработчик поиска
   const handleSearch = (query: string) => {
-    products.setSearchQuery(query);
-    setQuery({ search: query || undefined }, 'replaceIn');
+    if (productsStore) {
+      productsStore.setSearchQuery(query);
+      setQuery({ search: query || undefined }, 'replaceIn');
+    }
   };
 
   // Обработчик смены страницы
   const handlePageChange = (page: number) => {
-    products.setCurrentPage(page);
-    setQuery({ page }, 'replaceIn');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (productsStore) {
+      productsStore.setCurrentPage(page);
+      setQuery({ page }, 'replaceIn');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Обработчик выбора категории
   const handleCategorySelect = (categoryTitle: string | null) => {
-    products.setSelectedCategoryTitle(categoryTitle);
-    setQuery({ category: categoryTitle || undefined }, 'replaceIn');
+    if (productsStore) {
+      productsStore.setSelectedCategoryTitle(categoryTitle);
+      setQuery({ category: categoryTitle || undefined }, 'replaceIn');
+    }
   };
 
   // Обработчик нажатия на карточку
@@ -96,21 +113,30 @@ export const ProductsPage: React.FC = observer(() => {
     cart.addToCart(product.id, quantity);
   };
 
-  if (products.loading) {
+  if (!productsStore) {
     return (
       <div className={styles['products-loading']}>
         <Loader size="l" />
-        <p>Loading your cart...</p>
+        <p>Initializing...</p>
       </div>
     );
   }
 
-  if (products.error) {
+  if (productsStore.loading) {
+    return (
+      <div className={styles['products-loading']}>
+        <Loader size="l" />
+        <p>Loading products...</p>
+      </div>
+    );
+  }
+
+  if (productsStore.error) {
     return (
       <div className={styles['products-error']}>
         <h2>Oops! Something went wrong</h2>
-        <p>{products.error}</p>
-        <button onClick={() => products.fetchProducts}>Try Again</button>
+        <p>{productsStore.error}</p>
+        <button onClick={() => productsStore.fetchProducts()}>Try Again</button>
       </div>
     );
   }
@@ -125,33 +151,33 @@ export const ProductsPage: React.FC = observer(() => {
         <ProductSearch
           className={styles['products-page__search']}
           onSearch={handleSearch}
-          initialValue={products.searchQuery}
+          initialValue={productsStore.searchQuery}
           placeholder="Найти товары..."
         />
 
-        {products.categories.length > 0 && (
+        {productsStore.categories.length > 0 && (
           <CategoryFilter
-            categories={products.categories}
-            selectedCategory={products.selectedCategoryTitle}
+            categories={productsStore.categories}
+            selectedCategory={productsStore.selectedCategoryTitle}
             onSelectCategory={handleCategorySelect}
           />
         )}
       </div>
       <Text view="p-20" weight="bold" className={styles['products-page__products-count']}>
-        Всего товаров: {products.productsCount}
+        Всего товаров: {productsStore.productsCount}
       </Text>
 
       <ProductList
-        products={products.productsList}
+        products={productsStore.productsList}
         onProductClick={handleProductClick}
         onAddToCart={handleAddToCart}
       />
 
-      {products.totalPages > 1 && (
+      {productsStore.totalPages > 1 && (
         <Pagination
-          currentPage={products.currentPage}
-          totalPages={products.totalPages}
-          pageSize={products.pageSize}
+          currentPage={productsStore.currentPage}
+          totalPages={productsStore.totalPages}
+          pageSize={productsStore.pageSize}
           onPageChange={handlePageChange}
           delta={2}
         />

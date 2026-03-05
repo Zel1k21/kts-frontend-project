@@ -3,34 +3,52 @@ import { ProductList } from 'components/ProductList/ProductList';
 import Text from 'components/Text';
 import type { Product } from 'entities/Product/types';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStore } from 'shared/hooks/StoreContext';
+import type { ProductPageStore } from 'store/local';
 
 import styles from './productPage.module.scss';
 
 export const ProductPage: React.FC = observer(() => {
-  const store = useStore().product;
-  const product = store.product;
-  const cart = useStore().cart;
+  const storeContext = useStore();
+  const [productStore, setProductStore] = useState<ProductPageStore | null>(null);
+  const cart = storeContext.cart;
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
 
+  // Локальное хранилище при монтировании компонента
   useEffect(() => {
-    if (productId) {
-      store.initialize(productId);
+    const newStore = storeContext.createProductPageStore();
+    setProductStore(newStore);
+
+    return () => {
+      newStore.dispose();
+    };
+  }, [storeContext]);
+
+  useEffect(() => {
+    if (productId && productStore) {
+      productStore.initialize(productId);
     }
-  }, [productId, store]);
+  }, [productId, productStore]);
 
   const nextImage = useCallback(() => {
-    store.setCurrentImageIndex((store.currentImageIndex + 1) % store.productImages.length);
-  }, [store]);
+    if (productStore) {
+      productStore.setCurrentImageIndex(
+        (productStore.currentImageIndex + 1) % productStore.productImages.length
+      );
+    }
+  }, [productStore]);
 
   const prevImage = useCallback(() => {
-    store.setCurrentImageIndex(
-      (store.currentImageIndex - 1 + store.productImages.length) % store.productImages.length
-    );
-  }, [store]);
+    if (productStore) {
+      productStore.setCurrentImageIndex(
+        (productStore.currentImageIndex - 1 + productStore.productImages.length) %
+          productStore.productImages.length
+      );
+    }
+  }, [productStore]);
 
   const handleBack = () => {
     window.history.back();
@@ -38,16 +56,25 @@ export const ProductPage: React.FC = observer(() => {
 
   const handleProductClick = (product: Product) => {
     navigate(`/products/${product.documentId}`);
-    store.fetchProduct(product.documentId);
   };
 
   const handleAddToCart = (product: Product, quantity: number) => {
     cart.addToCart(product.id, quantity);
   };
 
-  const currentImage = store.product?.images?.[store.currentImageIndex];
+  if (!productStore) {
+    return (
+      <div className={styles['product-loading']}>
+        <Loader size="l" />
+        <p>Initializing...</p>
+      </div>
+    );
+  }
 
-  if (store.loading && product === null) {
+  const product = productStore.product;
+  const currentImage = product?.images?.[productStore.currentImageIndex];
+
+  if (productStore.loading && product === null) {
     return (
       <div className={styles['product-loading']}>
         <Loader size="l" />
@@ -56,12 +83,12 @@ export const ProductPage: React.FC = observer(() => {
     );
   }
 
-  if (store.error) {
+  if (productStore.error) {
     return (
       <div className={styles['store-error']}>
         <h2>Oops! Something went wrong</h2>
-        <p>{store.error}</p>
-        <button onClick={() => productId && store.initialize(productId)}>Try Again</button>
+        <p>{productStore.error}</p>
+        <button onClick={() => productId && productStore.initialize(productId)}>Try Again</button>
       </div>
     );
   }
@@ -107,11 +134,11 @@ export const ProductPage: React.FC = observer(() => {
                 <button
                   key={image.id || index}
                   className={`${styles['product-page__thumbnail']} ${
-                    index === store.currentImageIndex
+                    index === productStore.currentImageIndex
                       ? styles['product-page__thumbnail_active']
                       : ''
                   }`}
-                  onClick={() => store.setCurrentImageIndex(index)}
+                  onClick={() => productStore.setCurrentImageIndex(index)}
                   aria-label={`Изображение ${index + 1}`}
                 >
                   <img
@@ -184,7 +211,7 @@ export const ProductPage: React.FC = observer(() => {
         </Text>
         <ProductList
           isWidget={true}
-          products={store.relatedProducts}
+          products={productStore.relatedProducts}
           onProductClick={(product) => handleProductClick(product)}
           onAddToCart={handleAddToCart}
         />

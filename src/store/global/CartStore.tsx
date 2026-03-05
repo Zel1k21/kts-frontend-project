@@ -95,3 +95,5 @@ class CartStore {
 }
 
 export const cartStore = new CartStore();
+
+export { CartStore };

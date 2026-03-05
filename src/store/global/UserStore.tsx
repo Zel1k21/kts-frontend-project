@@ -84,3 +84,5 @@ class UsersStore {
 }
 
 export const UserStore = new UsersStore();
+
+export { UsersStore };
