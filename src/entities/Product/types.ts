@@ -78,9 +78,3 @@ export type ProductResponse = {
   data: Product;
   meta?: Record<string, unknown>;
 };
-
-export type ProductsPageResponse = {
-  products: Product[];
-  categories: ProductCategory[];
-  pagination: Pagination;
-};

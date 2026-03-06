@@ -1,32 +1,33 @@
 import { SearchInput } from 'components/SearchInput';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 type ProductSearchPrpos = {
   onSearch: (query: string) => void;
-  initialValue?: string;
+  value: string;
   placeholder?: string;
+  onChange: (v: string) => void;
   className?: string;
 };
 
 export const ProductSearch: React.FC<ProductSearchPrpos> = ({
   className,
   onSearch,
-  initialValue = '',
+  value,
+  onChange,
   placeholder,
 }) => {
-  const [query, setQuery] = useState(initialValue);
-
   const handleDebouncedChange = useCallback(
     (debouncedValue: string) => {
       onSearch(debouncedValue);
     },
     [onSearch]
   );
+
   return (
     <SearchInput
       className={className}
-      value={query}
-      onChange={setQuery}
+      value={value}
+      onChange={onChange}
       onDebounceChange={handleDebouncedChange}
       placeholder={placeholder}
       debounceDelay={300}

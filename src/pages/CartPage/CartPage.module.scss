@@ -1,0 +1,60 @@
+@use 'styles/main.scss' as *;
+
+.cart-page {
+  min-height: 100vh;
+  padding: 40px 0;
+  background-color: $background-color;
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 $space-l;
+
+    .cart-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: $primary-color;
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 30px;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__items {
+    background: white;
+    border-radius: $space-xs;
+    padding: $space-xl;
+    box-shadow: $box-shadow;
+    height: fit-content;
+  }
+
+  &__sidebar {
+    @include flex-container(column, center, center);
+    width: 380px;
+    gap: $space-l;
+  }
+}
+
+.continue-shopping {
+  color: $gray-color;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.cart-loading,
+.cart-error {
+  @include loader-container;
+}

@@ -1,0 +1,80 @@
+@use 'styles/main.scss' as *;
+
+.cart-summary {
+  background: white;
+  border-radius: $space-xs;
+  padding: $space-xl;
+  box-shadow: $box-shadow;
+  position: sticky;
+  width: 100%;
+  top: $space-l;
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 $space-l 0;
+  }
+
+  &__row {
+    @include flex-container(row, space-between, center);
+    padding: $space-xs 0;
+    font-size: 0.95rem;
+
+    &.summary-total {
+      font-size: 1.25rem;
+      font-weight: 700;
+      padding: 16px 0 8px 0;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background: #eee;
+    margin: $space-xxs 0;
+  }
+}
+
+.free-shipping-message {
+  background: #f0fff4;
+  color: #2f855a;
+  padding: $space-xs;
+  border-radius: $space-xxs;
+  font-size: 0.9rem;
+  margin: $space-xxs 0;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 16px;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $space-xxs;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 16px;
+
+  &:hover:not(:disabled) {
+    background: #333;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.trust-badges {
+  @include flex-container(column, center, center);
+  margin-top: $space-l;
+  padding-top: $space-l;
+  border-top: 1px solid #eee;
+
+  p {
+    font-size: 0.85rem;
+    color: $gray-color;
+    margin: $space-xxs 0;
+  }
+}

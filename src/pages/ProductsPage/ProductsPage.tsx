@@ -1,168 +1,188 @@
-import { CategoryFilter } from 'components/CategoryFilter';
+import CategoryFilter from 'components/CategoryFilter';
+import Loader from 'components/Loader';
 import Pagination from 'components/Pagination';
-import { ProductList } from 'components/ProductList/ProductList';
+import ProductList from 'components/ProductList';
 import Text from 'components/Text';
-import { getProductCategories, getProducts } from 'entities/Product/api';
-import type { Product, ProductsResponse, ProductCategory } from 'entities/Product/types';
-import React, { useCallback, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import type { Product } from 'entities/Product/types';
+import { runInAction } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useStore } from 'shared/hooks/StoreContext';
+import type { ProductsPageStore } from 'store/local';
+import { useQueryParams, withDefault, NumberParam, StringParam } from 'use-query-params';
 
-import { ProductSearch } from './ProductSearch';
+import ProductSearch from './ProductSearch';
+import styles from './productsPage.module.scss';
 
-import './productsPage.scss';
+// Конфигурация параметров запроса
+const queryConfig = {
+  page: withDefault(NumberParam, 1),
+  search: withDefault(StringParam, ''),
+  category: withDefault(StringParam, null),
+  sort: withDefault(StringParam, 'createdAt:desc'),
+};
 
-const PAGE_SIZE = 4;
-
-export const ProductsPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const [products, setProducts] = useState<Product[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [productsCount, setProductsCount] = useState(0);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const ProductsPage: React.FC = observer(() => {
+  const storeContext = useStore();
+  const [productsStore, setProductsStore] = useState<ProductsPageStore | null>(null);
+  const cart = storeContext.cart;
   const navigate = useNavigate();
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [query, setQuery] = useQueryParams(queryConfig);
+  const initialQueryRef = useRef(query);
 
-  const fetchCategories = useCallback(async () => {
-    const uniqueCategories: ProductCategory[] = await getProductCategories({
-      populate: ['productCategory', 'images'],
-    });
+  // Локальное хранилище при монтировании компонента
+  useEffect(() => {
+    const newStore = storeContext.createProductsPageStore();
+    setProductsStore(newStore);
 
-    uniqueCategories.sort((a, b) => a.title.localeCompare(b.title));
-    setCategories(uniqueCategories);
-  }, []);
+    return () => {
+      newStore.dispose();
+    };
+  }, [storeContext]);
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const filters: Record<string, unknown> = {};
-
-      if (selectedCategoryId) {
-        filters.productCategory = {
-          title: {
-            $eq: selectedCategoryId,
-          },
-        };
-      }
-
-      if (searchQuery) {
-        filters.title = { $containsi: searchQuery };
-      }
-
-      const response: ProductsResponse = await getProducts({
-        page: currentPage,
-        pageSize: PAGE_SIZE,
-        filters: Object.keys(filters).length > 0 ? filters : undefined,
-        populate: ['productCategory', 'images'],
-        sort: 'createdAt:desc',
+  useEffect(() => {
+    if (productsStore) {
+      productsStore.applyUrlParams({
+        page: initialQueryRef.current.page,
+        search: initialQueryRef.current.search,
+        category: initialQueryRef.current.category,
+        sort: initialQueryRef.current.sort,
       });
 
-      setProducts(response.data);
-      setTotalPages(response.meta.pagination.pageCount);
-      setProductsCount(response.meta.pagination.total);
-    } finally {
-      setLoading(false);
+      productsStore.initialize();
     }
-  }, [currentPage, searchQuery, selectedCategoryId]);
+  }, [productsStore, query.page, query.search, query.category, query.sort]);
 
+  // Реакция на изменение параметров запроса
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    if (productsStore?.isInitialized) {
+      productsStore.applyUrlParams({
+        page: query.page,
+        search: query.search,
+        category: query.category,
+        sort: query.sort,
+      });
+      productsStore.fetchProducts();
+    }
+  }, [query.page, query.search, query.category, query.sort, productsStore]);
 
+  // Обработка сброса страницы при пустом ответе
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    if (productsStore?.pageWasReset) {
+      setQuery({ page: 1 }, 'replaceIn'); // Заменяем номер страницы на 1
+      runInAction(() => {
+        productsStore.pageWasReset = false;
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [productsStore, productsStore?.pageWasReset, setQuery]);
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // Поиск сбрасывает пагинацию
-  }, []);
+  // Обработчик поиска
+  const handleSearch = (query: string) => {
+    setQuery({ search: query || undefined }, 'replaceIn');
+  };
 
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
-    // Плавный скролл к началу списка
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  // Обработчик смены страницы
+  const handlePageChange = (page: number) => {
+    if (productsStore) {
+      productsStore.setCurrentPage(page);
+      setQuery({ page }, 'replaceIn');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
-  const handleCategorySelect = useCallback((categoryId: string | null) => {
-    setSelectedCategoryId(categoryId);
-    setCurrentPage(1);
-  }, []);
+  // Обработчик выбора категории
+  const handleCategorySelect = (categoryTitle: string | null) => {
+    if (productsStore) {
+      productsStore.setSelectedCategoryTitle(categoryTitle);
+      setQuery({ category: categoryTitle || undefined }, 'replaceIn');
+    }
+  };
 
-  const handleProductClick = useCallback(
-    (product: Product) => {
-      navigate(`/products/${product.documentId}`);
-    },
-    [navigate]
-  );
+  // Обработчик нажатия на карточку
+  const handleProductClick = (product: Product) => {
+    navigate(`/products/${product.documentId}`);
+  };
 
-  const handleAddToCart = useCallback(() => {
-    // console.log('Added to cart:', product); change
-  }, []);
+  // Обработчик добавления в корзину
+  const handleAddToCart = (product: Product, quantity: number) => {
+    cart.addToCart(product.id, quantity);
+  };
 
-  if (loading && currentPage === 1 && products.length === 0) {
-    return <div className="products-page-loader">Загрузка...</div>;
+  if (!productsStore) {
+    return (
+      <div className={styles['products-loading']}>
+        <Loader size="l" />
+        <p>Initializing...</p>
+      </div>
+    );
   }
 
-  if (error && products.length === 0) {
+  if (productsStore.loading) {
     return (
-      <div className="products-page-error">
-        <p>{error}</p>
-        <button onClick={() => fetchProducts()}>Повторить</button>
+      <div className={styles['products-loading']}>
+        <Loader size="l" />
+        <p>Loading products...</p>
+      </div>
+    );
+  }
+
+  if (productsStore.error) {
+    return (
+      <div className={styles['products-error']}>
+        <h2>Oops! Something went wrong</h2>
+        <p>{productsStore.error}</p>
+        <button onClick={() => productsStore.fetchProducts()}>Try Again</button>
       </div>
     );
   }
 
   return (
-    <div className="products-page">
-      <header className="products-page-header">
+    <div className={styles['products-page']}>
+      <header className={styles['products-page__header']}>
         <h1>Каталог товаров</h1>
       </header>
 
-      <div className="products-page-filters">
+      <div className={styles['products-page__filters']}>
         <ProductSearch
-          className="product-page-search"
+          className={styles['products-page__search']}
           onSearch={handleSearch}
-          initialValue={searchQuery}
+          value={productsStore.searchQuery}
+          onChange={(v) => productsStore.setSearchQuery(v)}
           placeholder="Найти товары..."
         />
 
-        {categories.length > 0 && (
+        {productsStore.categories.length > 0 && (
           <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategoryId}
+            categories={productsStore.categories}
+            selectedCategory={productsStore.selectedCategoryTitle}
             onSelectCategory={handleCategorySelect}
           />
         )}
       </div>
-      <Text view="p-20" weight="bold" className="products-count">
-        Всего товаров: {productsCount}
+      <Text view="p-20" weight="bold" className={styles['products-page__products-count']}>
+        Всего товаров: {productsStore.productsCount}
       </Text>
 
       <ProductList
-        products={products}
+        products={productsStore.productsList}
         onProductClick={handleProductClick}
         onAddToCart={handleAddToCart}
       />
 
-      {totalPages > 1 && (
+      {productsStore.totalPages > 1 && (
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageSize={PAGE_SIZE}
+          currentPage={productsStore.currentPage}
+          totalPages={productsStore.totalPages}
+          pageSize={productsStore.pageSize}
           onPageChange={handlePageChange}
           delta={2}
         />
       )}
     </div>
   );
-};
+});
 
 export default ProductsPage;

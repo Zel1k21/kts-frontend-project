@@ -26,6 +26,7 @@
       "entities/*": ["entities/*"],
       "shared/*": ["shared/*"],
       "styles/*": ["styles/*"],
+      "store/*": ["store/*"]
     },
 
     /* Linting */

@@ -1,15 +1,21 @@
 import Text from 'components/Text';
 import routes from 'config/routes';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useStore } from 'shared/hooks/StoreContext';
 
 import styles from './navbar.module.scss';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const user = useStore().user;
 
   const toggleMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogin = () => {
+    user.login('email.my@gmail.com', 'Password123');
   };
 
   return (
@@ -26,8 +32,8 @@ const Navbar = () => {
       </div>
 
       <div className={styles['profile-links']}>
-        <Text>Cart</Text>
-        <Text>Profile</Text>
+        <Link to={routes.cart.mask}>Cart</Link>
+        <button onClick={() => handleLogin()}>Profile</button>
       </div>
 
       <button className={styles['burger-btn']} onClick={toggleMenu} aria-label="Toggle menu">
