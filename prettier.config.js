@@ -8,7 +8,7 @@ const config = {
   singleQuote: true,
   useTabs: false,
   semi: true,
-  trailingComma: "es5",
+  trailingComma: 'es5',
 };
 
 export default config;

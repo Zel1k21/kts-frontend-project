@@ -6,7 +6,7 @@ import Text from 'components/Text';
 import type { Product } from 'entities/Product/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from 'shared/hooks/StoreContext';
 import type { ProductsPageStore } from 'store/local';
@@ -30,6 +30,7 @@ export const ProductsPage: React.FC = observer(() => {
   const navigate = useNavigate();
 
   const [query, setQuery] = useQueryParams(queryConfig);
+  const initialQueryRef = useRef(query);
 
   // Локальное хранилище при монтировании компонента
   useEffect(() => {
@@ -44,10 +45,10 @@ export const ProductsPage: React.FC = observer(() => {
   useEffect(() => {
     if (productsStore) {
       productsStore.applyUrlParams({
-        page: query.page,
-        search: query.search,
-        category: query.category,
-        sort: query.sort,
+        page: initialQueryRef.current.page,
+        search: initialQueryRef.current.search,
+        category: initialQueryRef.current.category,
+        sort: initialQueryRef.current.sort,
       });
 
       productsStore.initialize();
@@ -80,10 +81,7 @@ export const ProductsPage: React.FC = observer(() => {
 
   // Обработчик поиска
   const handleSearch = (query: string) => {
-    if (productsStore) {
-      productsStore.setSearchQuery(query);
-      setQuery({ search: query || undefined }, 'replaceIn');
-    }
+    setQuery({ search: query || undefined }, 'replaceIn');
   };
 
   // Обработчик смены страницы
@@ -151,7 +149,8 @@ export const ProductsPage: React.FC = observer(() => {
         <ProductSearch
           className={styles['products-page__search']}
           onSearch={handleSearch}
-          initialValue={productsStore.searchQuery}
+          value={productsStore.searchQuery}
+          onChange={(v) => productsStore.setSearchQuery(v)}
           placeholder="Найти товары..."
         />
 

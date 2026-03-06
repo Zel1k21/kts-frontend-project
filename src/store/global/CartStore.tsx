@@ -4,7 +4,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 class CartStore {
   cart: CartItem[] = [];
-  isLoading = false;
+  isLoading = true;
   error: string | null = null;
 
   isInitialized = false;
