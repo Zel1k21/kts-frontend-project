@@ -1,5 +1,9 @@
 @use 'styles/main.scss' as *;
 
+.product-card {
+  border-radius: 8px;
+}
+
 .products-list {
   margin: 2.25rem 0;
   display: grid;
@@ -12,10 +16,11 @@
     flex-direction: row;
     gap: 1.5rem;
     overflow: auto hidden;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     cursor: grab;
     user-select: none;
     margin: 1rem 0;
+    justify-content: inherit;
 
     &::-webkit-scrollbar {
       height: 6px;
@@ -37,7 +42,6 @@
 
     .product-card {
       flex: 0 0 auto;
-      border-radius: 8px;
       width: 200px;
       max-width: 200px;
       cursor: grab;

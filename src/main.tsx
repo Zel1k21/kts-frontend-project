@@ -1,10 +1,21 @@
+import configure from 'config/configureMobX';
+import { routesConfig } from 'config/routes';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router';
-
-import { routesConfig } from './config/routes';
-
-const router = createBrowserRouter(routesConfig);
+import { BrowserRouter, Routes } from 'react-router-dom';
+import { StoreProvider } from 'store/StoreContext';
+import { QueryParamProvider } from 'use-query-params';
+import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement);
 
-root.render(<RouterProvider router={router} />);
+configure({});
+
+root.render(
+  <BrowserRouter>
+    <QueryParamProvider adapter={ReactRouter6Adapter}>
+      <StoreProvider>
+        <Routes>{routesConfig}</Routes>
+      </StoreProvider>
+    </QueryParamProvider>
+  </BrowserRouter>
+);
