@@ -14,6 +14,8 @@
     position: absolute;
     right: 12px;
     top: 14px;
+    @include square(24px);
+    @include flex-container(row, center, center);
   }
 
   &__wrapper {

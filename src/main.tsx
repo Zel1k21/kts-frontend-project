@@ -1,11 +1,14 @@
+import configure from 'config/configureMobX';
 import { routesConfig } from 'config/routes';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes } from 'react-router-dom';
-import { StoreProvider } from 'shared/hooks/StoreContext';
+import { StoreProvider } from 'store/StoreContext';
 import { QueryParamProvider } from 'use-query-params';
 import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement);
+
+configure({});
 
 root.render(
   <BrowserRouter>

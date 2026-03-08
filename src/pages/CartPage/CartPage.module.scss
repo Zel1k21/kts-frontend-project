@@ -25,6 +25,7 @@
 
     @media (max-width: 992px) {
       grid-template-columns: 1fr;
+      @include flex-container(column, center, center);
     }
   }
 
@@ -40,6 +41,10 @@
     @include flex-container(column, center, center);
     width: 380px;
     gap: $space-l;
+
+    @media (max-width: $tablet) {
+      width: 100%;
+    }
   }
 }
 

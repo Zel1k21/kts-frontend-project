@@ -2,7 +2,7 @@ import Text from 'components/Text';
 import routes from 'config/routes';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useStore } from 'shared/hooks/StoreContext';
+import { useStore } from 'store/StoreContext';
 
 import styles from './navbar.module.scss';
 
@@ -16,6 +16,10 @@ const Navbar = () => {
 
   const handleLogin = () => {
     user.login('email.my@gmail.com', 'Password123');
+  };
+
+  const handleLogout = () => {
+    user.logout();
   };
 
   return (
@@ -33,7 +37,7 @@ const Navbar = () => {
 
       <div className={styles['profile-links']}>
         <Link to={routes.cart.mask}>Cart</Link>
-        <button onClick={() => handleLogin()}>Profile</button>
+        <button onClick={user.getIsAuthenticated() ? handleLogin : handleLogout}>Profile</button>
       </div>
 
       <button className={styles['burger-btn']} onClick={toggleMenu} aria-label="Toggle menu">

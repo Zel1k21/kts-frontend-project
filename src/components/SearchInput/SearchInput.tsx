@@ -1,7 +1,10 @@
+import CrossIcon from 'assets/cross.svg?react';
 import cn from 'classnames';
 import Input, { type InputProps } from 'components/Input';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDebounce } from 'shared/hooks/useDebounce';
+
+import styles from './SearchInput.module.scss';
 
 export type SearchInputProps = {
   //callback с значение для useDebounce
@@ -16,7 +19,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   onDebounceChange,
-  debounceDelay = 300,
+  debounceDelay = 700,
   placeholder,
   className,
   disabled,
@@ -27,6 +30,25 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   useEffect(() => {
     onDebounceChange(debouncedValue);
   }, [debouncedValue, onDebounceChange]);
+
+  const handleClear = useCallback(() => {
+    onChange('');
+    onDebounceChange('');
+  }, [onChange, onDebounceChange]);
+
+  const clearIcon =
+    value && !disabled ? (
+      <button
+        type="button"
+        onClick={handleClear}
+        className={styles['search-input__clear-btn']}
+        disabled={disabled}
+        aria-label="Очистить поиск"
+      >
+        <CrossIcon />
+      </button>
+    ) : null;
+
   return (
     <div className={cn('search-input', className)} style={{ marginBottom: '1rem' }}>
       <Input
@@ -34,6 +56,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
+        afterSlot={clearIcon}
         {...inputProps}
       />
     </div>

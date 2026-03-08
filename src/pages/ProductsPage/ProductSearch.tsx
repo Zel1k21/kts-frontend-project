@@ -30,7 +30,6 @@ export const ProductSearch: React.FC<ProductSearchPrpos> = ({
       onChange={onChange}
       onDebounceChange={handleDebouncedChange}
       placeholder={placeholder}
-      debounceDelay={300}
     />
   );
 };

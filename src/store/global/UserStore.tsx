@@ -1,5 +1,5 @@
 import { registerUser, loginUser, logout } from 'entities/User/api';
-import type { User } from 'entities/User/types';
+import type { RegisterUserPayload, User } from 'entities/User/types';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 class UsersStore {
@@ -11,6 +11,10 @@ class UsersStore {
   constructor() {
     makeAutoObservable(this);
     this.checkAuth();
+  }
+
+  getIsAuthenticated() {
+    return this.isAuthenticated;
   }
 
   checkAuth() {
@@ -46,7 +50,7 @@ class UsersStore {
     }
   }
 
-  async register(data: User) {
+  async register(data: RegisterUserPayload) {
     runInAction(() => {
       this.isLoading = true;
       this.error = null;

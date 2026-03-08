@@ -34,3 +34,15 @@ export const useStore = () => {
   if (!store) throw new Error('useStore must be used within StoreProvider');
   return store;
 };
+
+export const useCartStore = () => {
+  const store = useContext(StoreContext);
+  if (!store) throw new Error('useCartStore must be used within StoreProvider');
+  return store.cart;
+};
+
+export const useUserStore = () => {
+  const store = useContext(StoreContext);
+  if (!store) throw new Error('useCartStore must be used within StoreProvider');
+  return store.user;
+};

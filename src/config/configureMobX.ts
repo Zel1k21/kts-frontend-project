@@ -6,3 +6,5 @@ configure({
   reactionRequiresObservable: true,
   observableRequiresReaction: true,
 });
+
+export default configure;

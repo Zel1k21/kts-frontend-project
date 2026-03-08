@@ -10,4 +10,4 @@ export { createProductPageStore, createProductsPageStore } from './local';
 export type { ProductPageStore, ProductsPageStore, ProductQueryParams } from './local';
 
 // Утилиты для работы с хранилищами
-export { StoreProvider, useStore } from '../shared/hooks/StoreContext';
+export { StoreProvider, useStore } from './StoreContext';

@@ -8,7 +8,7 @@ import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from 'shared/hooks/StoreContext';
+import { useStore } from 'store/StoreContext';
 import type { ProductsPageStore } from 'store/local';
 import { useQueryParams, withDefault, NumberParam, StringParam } from 'use-query-params';
 

@@ -1,13 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from 'shared/hooks/StoreContext';
+import { useCartStore, useUserStore } from 'store/StoreContext';
 
 import styles from './CartSummary.module.scss';
 
 export const CartSummary = observer(() => {
   const navigate = useNavigate();
-  const user = useStore().user;
-  const cart = useStore().cart;
+  const user = useUserStore();
+  const cart = useCartStore();
 
   const handleCheckout = () => {
     if (!user.isAuthenticated) {
@@ -17,33 +17,29 @@ export const CartSummary = observer(() => {
     navigate('/checkout');
   };
 
-  const subtotal = cart.getTotalPrice();
-  const shipping = subtotal > 100 ? 0 : 9.99;
-  const total = subtotal + shipping;
-
   return (
     <div className={styles['cart-summary']}>
       <h2>Order Summary</h2>
 
       <div className={styles['cart-summary__row']}>
         <span>Subtotal ({cart.getCartSize()} items)</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span>${cart.getTotalPrice().toFixed(2)}</span>
       </div>
 
       <div className={styles['cart-summary__row']}>
         <span>Shipping</span>
-        <span>{shipping === 0 ? 'FREE' : `$${shipping}`}</span>
+        <span>{cart.getShippingPrice() === 0 ? 'FREE' : `$${cart.getShippingPrice()}`}</span>
       </div>
 
-      {shipping === 0 && (
+      {cart.getShippingPrice() === 0 && (
         <p className={styles['free-shipping-message']}>🎉 You qualify for free shipping!</p>
       )}
 
       <div className={styles['cart-summary__divider']} />
 
-      <div className={styles['cart-summary__row cart-summary__total']}>
-        <span>Total</span>
-        <span>${total}</span>
+      <div className={styles['cart-summary__row']}>
+        <span className={styles['total-label']}>Total:</span>
+        <span>${cart.getPriceWithShipping()}</span>
       </div>
 
       <button onClick={handleCheckout} className={styles['checkout-btn']} disabled={cart.isLoading}>

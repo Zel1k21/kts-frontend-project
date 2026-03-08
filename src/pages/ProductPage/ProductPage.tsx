@@ -1,18 +1,19 @@
+import cn from 'classnames';
 import Loader from 'components/Loader/Loader';
 import { ProductList } from 'components/ProductList/ProductList';
 import Text from 'components/Text';
 import type { Product } from 'entities/Product/types';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useStore } from 'shared/hooks/StoreContext';
-import type { ProductPageStore } from 'store/local';
+import { useStore } from 'store/StoreContext';
 
 import styles from './productPage.module.scss';
 
 export const ProductPage: React.FC = observer(() => {
   const storeContext = useStore();
-  const [productStore, setProductStore] = useState<ProductPageStore | null>(null);
+  const storeRef = useRef(storeContext.createProductPageStore());
+  const productStore = storeRef.current;
   const cart = storeContext.cart;
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export const ProductPage: React.FC = observer(() => {
   // Локальное хранилище при монтировании компонента
   useEffect(() => {
     const newStore = storeContext.createProductPageStore();
-    setProductStore(newStore);
+    storeRef.current = newStore;
 
     return () => {
       newStore.dispose();
@@ -28,26 +29,22 @@ export const ProductPage: React.FC = observer(() => {
   }, [storeContext]);
 
   useEffect(() => {
-    if (productId && productStore) {
+    if (productId) {
       productStore.initialize(productId);
     }
   }, [productId, productStore]);
 
   const nextImage = useCallback(() => {
-    if (productStore) {
-      productStore.setCurrentImageIndex(
-        (productStore.currentImageIndex + 1) % productStore.productImages.length
-      );
-    }
+    productStore.setCurrentImageIndex(
+      (productStore.currentImageIndex + 1) % productStore.productImages.length
+    );
   }, [productStore]);
 
   const prevImage = useCallback(() => {
-    if (productStore) {
-      productStore.setCurrentImageIndex(
-        (productStore.currentImageIndex - 1 + productStore.productImages.length) %
-          productStore.productImages.length
-      );
-    }
+    productStore.setCurrentImageIndex(
+      (productStore.currentImageIndex - 1 + productStore.productImages.length) %
+        productStore.productImages.length
+    );
   }, [productStore]);
 
   const handleBack = () => {
@@ -61,15 +58,6 @@ export const ProductPage: React.FC = observer(() => {
   const handleAddToCart = (product: Product, quantity: number) => {
     cart.addToCart(product.id, quantity);
   };
-
-  if (!productStore) {
-    return (
-      <div className={styles['product-loading']}>
-        <Loader size="l" />
-        <p>Initializing...</p>
-      </div>
-    );
-  }
 
   const product = productStore.product;
   const currentImage = product?.images?.[productStore.currentImageIndex];
@@ -133,11 +121,10 @@ export const ProductPage: React.FC = observer(() => {
               {product.images.map((image, index) => (
                 <button
                   key={image.id || index}
-                  className={`${styles['product-page__thumbnail']} ${
-                    index === productStore.currentImageIndex
-                      ? styles['product-page__thumbnail_active']
-                      : ''
-                  }`}
+                  className={cn(styles['product-page__thumbnail'], {
+                    [styles['product-page__thumbnail_active']]:
+                      index === productStore.currentImageIndex,
+                  })}
                   onClick={() => productStore.setCurrentImageIndex(index)}
                   aria-label={`Изображение ${index + 1}`}
                 >
@@ -212,7 +199,7 @@ export const ProductPage: React.FC = observer(() => {
         <ProductList
           isWidget={true}
           products={productStore.relatedProducts}
-          onProductClick={(product) => handleProductClick(product)}
+          onProductClick={handleProductClick}
           onAddToCart={handleAddToCart}
         />
       </div>

@@ -4,7 +4,7 @@ import Loader from 'components/Loader';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useStore } from 'shared/hooks/StoreContext';
+import { useStore } from 'store/StoreContext';
 
 import styles from './CartPage.module.scss';
 

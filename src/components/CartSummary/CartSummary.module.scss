@@ -9,6 +9,10 @@
   width: 100%;
   top: $space-l;
 
+  @media (max-width: $tablet) {
+    padding: 24px;
+  }
+
   h2 {
     font-size: 1.25rem;
     font-weight: 700;
@@ -19,12 +23,6 @@
     @include flex-container(row, space-between, center);
     padding: $space-xs 0;
     font-size: 0.95rem;
-
-    &.summary-total {
-      font-size: 1.25rem;
-      font-weight: 700;
-      padding: 16px 0 8px 0;
-    }
   }
 
   &__divider {

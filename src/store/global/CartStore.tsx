@@ -1,9 +1,10 @@
 import { getCart, addToCart, removeFromCart } from 'entities/Cart/api';
-import type { CartItem } from 'entities/Cart/types';
 import { makeAutoObservable, runInAction } from 'mobx';
 
+import { CartItemModel } from './CartItemModel';
+
 class CartStore {
-  cart: CartItem[] = [];
+  cart: CartItemModel[] = [];
   isLoading = true;
   error: string | null = null;
 
@@ -21,12 +22,22 @@ class CartStore {
     return totalCount;
   }
 
+  getShippingPrice(): number {
+    const shipping = this.getTotalPrice() > 100 ? 0 : 9.99;
+    return shipping;
+  }
+
   getTotalPrice(): number {
-    let totalPrise = 0;
+    let totalPrice = 0;
     for (const item of this.cart) {
-      totalPrise += item.product.price * item.quantity;
+      totalPrice += item.totalPrice;
     }
-    return totalPrise;
+    return totalPrice;
+  }
+
+  getPriceWithShipping(): number {
+    const finalCost = this.getTotalPrice() + this.getShippingPrice();
+    return finalCost;
   }
 
   get items() {
@@ -41,7 +52,7 @@ class CartStore {
     try {
       const cart = await getCart();
       runInAction(() => {
-        this.cart = cart;
+        this.cart = cart.map((item) => new CartItemModel(item));
       });
     } catch (error) {
       runInAction(() => {
